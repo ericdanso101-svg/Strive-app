@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Strive | Buffs Mobile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cublack: '#000000',
+                        cugold: '#CFB87C',
+                        cusilver: '#A2A4A3',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Prevents pull-to-refresh on some mobile browsers while in the app */
+        body { overscroll-behavior-y: contain; -webkit-tap-highlight-color: transparent; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-cublack text-white min-h-screen font-sans pb-24">
+
+    <header class="p-5 border-b border-cugold text-center bg-cublack sticky top-0 z-50 shadow-lg">
+        <h1 class="text-2xl font-black tracking-tighter text-cugold uppercase italic">Strive Tracker</h1>
+        <div class="flex justify-center mt-3 gap-6">
+            <button onclick="switchTab('daily')" id="tab-daily" class="text-[10px] font-black uppercase tracking-widest border-b-2 border-cugold pb-1">Daily</button>
+            <button onclick="switchTab('weekly')" id="tab-weekly" class="text-[10px] font-black uppercase tracking-widest text-cusilver pb-1">Weekly</button>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-6 max-w-md space-y-6">
+
+        <div id="view-daily" class="space-y-6">
+            <section class="bg-cublack p-5 rounded-[2rem] border border-cusilver shadow-2xl">
+                <h2 class="text-md font-bold mb-4 text-cugold uppercase tracking-widest italic text-center">1. Vital Stats</h2>
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <input type="number" id="v-weight" placeholder="LBS" class="bg-cublack border border-cusilver p-4 rounded-2xl outline-none focus:ring-2 focus:ring-cugold text-center text-lg font-bold">
+                    <input type="number" id="v-height" placeholder="IN" class="bg-cublack border border-cusilver p-4 rounded-2xl outline-none focus:ring-2 focus:ring-cugold text-center text-lg font-bold">
+                </div>
+                <div class="mb-4">
+                    <select id="v-goal" class="w-full bg-cublack border border-cusilver p-4 rounded-2xl outline-none text-sm font-black text-cugold uppercase text-center appearance-none">
+                        <option value="General Wellness">General Wellness</option>
+                        <option value="Build Muscle">Build Muscle</option>
+                        <option value="Fat Loss">Fat Loss</option>
+                        <option value="Mass Gain">Mass Gain</option>
+                        <option value="Core Definition">Core Definition</option>
+                    </select>
+                </div>
+                <button onclick="calculateBMI()" class="w-full bg-cugold text-cublack font-black py-4 rounded-2xl uppercase tracking-widest text-xs active:scale-95 transition">
+                    Save & Calculate BMI
+                </button>
+                <div id="bmi-display" class="hidden mt-4 p-4 bg-cublack rounded-2xl border border-cugold text-center animate-pulse">
+                    <div class="text-4xl font-black text-cugold" id="bmi-num">--</div>
+                    <div id="bmi-status" class="text-[10px] font-bold uppercase tracking-widest">--</div>
+                </div>
+            </section>
+
+            <section class="bg-cublack p-5 rounded-[2rem] border border-cugold shadow-2xl text-center">
+                <h2 class="text-md font-bold mb-4 text-cugold uppercase tracking-widest italic">2. Workout</h2>
+                <div id="workout-menu" class="grid grid-cols-1 gap-3">
+                    <button onclick="generateWorkout('upper')" class="w-full bg-cublack border-2 border-cusilver text-white font-black py-5 rounded-2xl uppercase text-xs active:bg-cugold active:text-cublack transition">Upper Body</button>
+                    <button onclick="generateWorkout('lower')" class="w-full bg-cublack border-2 border-cusilver text-white font-black py-5 rounded-2xl uppercase text-xs active:bg-cugold active:text-cublack transition">Lower Body</button>
+                    <button onclick="generateWorkout('core')" class="w-full bg-cublack border-2 border-cusilver text-white font-black py-5 rounded-2xl uppercase text-xs active:bg-cugold active:text-cublack transition">Core Focus</button>
+                </div>
+                
+                <div id="active-workout" class="hidden text-left space-y-4">
+                    <div class="flex justify-between items-center border-b border-cusilver pb-2">
+                        <h3 id="active-title" class="text-cugold font-black uppercase text-xs italic"></h3>
+                        <button onclick="resetMenu()" class="text-[10px] font-bold text-cusilver uppercase underline">Back</button>
+                    </div>
+                    <div id="exercise-list" class="space-y-3"></div>
+                    <button onclick="logSession()" class="w-full bg-cugold text-cublack font-black py-5 rounded-2xl uppercase text-xs shadow-lg active:scale-95 transition">Log Session</button>
+                </div>
+            </section>
+        </div>
+
+        <div id="view-weekly" class="hidden space-y-6">
+            <section class="bg-cublack p-5 rounded-[2rem] border border-cugold shadow-xl">
+                <h2 class="text-md font-bold mb-4 text-cugold uppercase tracking-widest italic text-center">Weekly Planner</h2>
+                <div class="grid grid-cols-1 gap-2 mb-4">
+                    <div class="flex gap-2">
+                        <select id="day-selector" class="flex-1 bg-cublack border border-cusilver p-4 rounded-2xl text-xs font-bold uppercase">
+                            <option value="Monday">Monday</option><option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option><option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option><option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                        </select>
+                        <select id="availability-selector" class="flex-1 bg-cublack border border-cugold p-4 rounded-2xl text-xs font-bold text-cugold uppercase">
+                            <option value="No Workout">Rest</option>
+                            <option value="Short">Short</option>
+                            <option value="Full">Full</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="saveDay()" class="w-full bg-cusilver text-cublack font-black py-4 rounded-2xl uppercase text-xs active:scale-95 transition">Update Schedule</button>
+                <div id="weekly-board" class="mt-6 space-y-2"></div>
+            </section>
+        </div>
+
+        <section class="bg-cublack p-5 rounded-[2rem] border border-cusilver shadow-xl">
+            <h2 class="text-md font-bold mb-4 text-cugold uppercase tracking-widest italic text-center">Progress</h2>
+            <div id="history-list" class="space-y-2 max-h-48 overflow-y-auto no-scrollbar">
+                <p class="text-cusilver italic text-center text-xs">No history yet.</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        let history = JSON.parse(localStorage.getItem('strive_history')) || [];
+        let schedule = JSON.parse(localStorage.getItem('strive_schedule')) || {
+            'Monday': 'Full', 'Tuesday': 'No Workout', 'Wednesday': 'Full', 
+            'Thursday': 'No Workout', 'Friday': 'Full', 'Saturday': 'Short', 'Sunday': 'No Workout'
+        };
+
+        window.onload = function() {
+            renderHistory();
+            renderWeeklyBoard();
+        };
+
+        function switchTab(tab) {
+            document.getElementById('view-daily').classList.toggle('hidden', tab !== 'daily');
+            document.getElementById('view-weekly').classList.toggle('hidden', tab !== 'weekly');
+            document.getElementById('tab-daily').className = tab === 'daily' ? "text-[10px] font-black uppercase tracking-widest border-b-2 border-cugold pb-1" : "text-[10px] font-black uppercase tracking-widest text-cusilver pb-1 hover:text-white transition";
+            document.getElementById('tab-weekly').className = tab === 'weekly' ? "text-[10px] font-black uppercase tracking-widest border-b-2 border-cugold pb-1" : "text-[10px] font-black uppercase tracking-widest text-cusilver pb-1 hover:text-white transition";
+        }
+
+        function calculateBMI() {
+            const w = parseFloat(document.getElementById('v-weight').value);
+            const h = parseFloat(document.getElementById('v-height').value);
+            if (!w || !h) return alert("Enter weight & height!");
+            const bmi = (703 * (w / (h * h))).toFixed(1);
+            document.getElementById('bmi-display').classList.remove('hidden');
+            document.getElementById('bmi-num').innerText = bmi;
+            const status = document.getElementById('bmi-status');
+            if (bmi < 18.5) { status.innerText = "Underweight"; status.className = "text-cusilver text-[10px] font-bold uppercase"; }
+            else if (bmi <= 24.9) { status.innerText = "Healthy Weight"; status.className = "text-cugold text-[10px] font-bold uppercase"; }
+            else { status.innerText = "Overweight"; status.className = "text-red-500 text-[10px] font-bold uppercase"; }
+            localStorage.setItem('strive_profile', JSON.stringify({weight:w, height:h, goal: document.getElementById('v-goal').value}));
+        }
+
+        function saveDay() {
+            schedule[document.getElementById('day-selector').value] = document.getElementById('availability-selector').value;
+            localStorage.setItem('strive_schedule', JSON.stringify(schedule));
+            renderWeeklyBoard();
+            alert("Day Saved!");
+        }
+
+        function renderWeeklyBoard() {
+            const board = document.getElementById('weekly-board');
+            const today = days[(new Date().getDay() + 6) % 7];
+            board.innerHTML = days.map(day => `
+                <div class="flex justify-between items-center p-4 border rounded-2xl ${day === today ? 'border-cugold bg-cugold/5' : 'border-cusilver/30'}">
+                    <span class="font-black uppercase text-[10px] tracking-widest ${day === today ? 'text-cugold' : 'text-cusilver'}">${day}</span>
+                    <span class="text-[10px] font-bold uppercase italic ${schedule[day] === 'No Workout' ? 'text-cusilver/50' : 'text-white'}">${schedule[day]}</span>
+                </div>`).join('');
+        }
+
+        const exercisePool = {
+            upper: ['Pushups', 'Dumbbell Rows', 'Bench Press', 'Shoulder Press', 'Dips'],
+            lower: ['Squats', 'Lunges', 'Deadlifts', 'Leg Press', 'Calf Raises'],
+            core: ['Plank', 'Russian Twists', 'Leg Raises', 'Burpees', 'Mountain Climbers']
+        };
+
+        function generateWorkout(mode) {
+            const goal = document.getElementById('v-goal').value;
+            const todaySched = schedule[days[(new Date().getDay() + 6) % 7]] || "Full";
+            if (todaySched === "No Workout") return alert("Rest Day! Go Buffs!");
+
+            document.getElementById('workout-menu').classList.add('hidden');
+            document.getElementById('active-workout').classList.remove('hidden');
+            document.getElementById('active-title').innerText = `${mode} • ${goal}`;
+
+            let sets = todaySched === "Short" ? 2 : 3;
+            let reps = "12"; let rest = "60s";
+
+            if (goal === "Build Muscle") { reps = "8-10"; rest = "90s"; }
+            else if (goal === "Fat Loss") { reps = "15-20"; rest = "30s"; }
+            else if (goal === "Mass Gain") { reps = "6-8"; rest = "120s"; sets = todaySched === "Short" ? 3 : 4; }
+            else if (goal === "Core Definition") { reps = "20+"; rest = "45s"; }
+
+            const count = todaySched === "Short" ? 3 : 5;
+            const selected = [...exercisePool[mode]].sort(() => 0.5 - Math.random()).slice(0, count);
+
+            document.getElementById('exercise-list').innerHTML = selected.map(ex => `
+                <div class="flex justify-between items-center p-4 border border-cusilver/40 rounded-2xl bg-slate-900/20">
+                    <div>
+                        <span class="font-black uppercase text-[10px] text-white tracking-widest">${ex}</span>
+                        <p class="text-[9px] font-bold text-cugold uppercase mt-1">${sets} Sets x ${reps} Reps</p>
+                    </div>
+                    <button onclick="startMobileTimer(this, '${rest}')" class="text-[9px] font-bold uppercase border border-cusilver px-4 py-2 rounded-xl active:bg-cugold active:text-cublack">Rest</button>
+                </div>`).join('');
+        }
+
+        function startMobileTimer(btn, rest) {
+            btn.innerText = rest;
+            btn.classList.add('text-cugold', 'border-cugold');
+            setTimeout(() => { btn.innerText = "Done"; btn.classList.remove('text-cugold', 'border-cugold'); }, 2000);
+        }
+
+        function resetMenu() {
+            document.getElementById('workout-menu').classList.remove('hidden');
+            document.getElementById('active-workout').classList.add('hidden');
+        }
+
+        function logSession() {
+            history.unshift({ date: new Date().toLocaleDateString(), mode: "WORKOUT" });
+            localStorage.setItem('strive_history', JSON.stringify(history));
+            renderHistory();
+            resetMenu();
+            alert("Buffs Session Tracked!");
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('history-list');
+            if (history.length === 0) return;
+            list.innerHTML = history.map(item => `
+                <div class="flex justify-between p-4 bg-cublack rounded-2xl border border-cusilver/20 mb-2">
+                    <span class="text-cusilver font-mono text-[9px]">${item.date}</span>
+                    <span class="font-black text-cugold uppercase italic text-[10px]">Session Done</span>
+                </div>`).join('');
+        }
+    </script>
+</body>
+</html>
