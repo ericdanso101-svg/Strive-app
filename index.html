@@ -3,103 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Strive | AI Trainer</title>
+    <title>Strive | Smart Trainer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { background-color: #F8FAFC; color: #1E293B; font-family: 'Inter', sans-serif; }
-        .hero-bg { background: linear-gradient(rgba(37, 99, 235, 0.7), rgba(30, 58, 138, 0.9)), url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80'); background-size: cover; background-position: center; }
-        .card { background: white; border-radius: 24px; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05); border: 1px solid #E2E8F0; }
-        .btn-trainer { background: #2563EB; color: white; font-weight: 800; border-radius: 16px; transition: all 0.2s; box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.39); }
-        .progress-ring { transition: stroke-dashoffset 0.35s; transform: rotate(-90deg); transform-origin: 50% 50%; }
+        body { background-color: #FFFFFF; color: #1E293B; font-family: 'Inter', sans-serif; }
+        .hero-bg { background: linear-gradient(rgba(37, 99, 235, 0.6), rgba(59, 130, 246, 0.8)), url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80'); background-size: cover; background-position: center; }
+        .card { background: #F8FAFC; border-radius: 28px; border: 1px solid #F1F5F9; transition: transform 0.2s; }
+        .active-btn { background: #2563EB; color: white; border-radius: 12px; }
     </style>
 </head>
 <body class="pb-24">
 
-    <header class="hero-bg text-white p-10 text-center rounded-b-[3.5rem] shadow-2xl mb-6">
-        <h1 class="text-3xl font-black italic tracking-tighter uppercase mb-2">Strive Trainer</h1>
-        <p class="text-[10px] font-bold uppercase tracking-[0.2em] opacity-80">Activity & Movement Intelligence</p>
+    <header class="hero-bg text-white p-12 text-center rounded-b-[4rem] shadow-lg mb-4">
+        <h1 class="text-3xl font-black italic tracking-tighter uppercase">Strive</h1>
+        <p class="text-[9px] font-bold uppercase tracking-[0.3em] opacity-90 mt-1">Your Personal Digital Trainer</p>
     </header>
 
-    <main class="container mx-auto px-4 max-w-md space-y-6">
+    <main class="container mx-auto px-5 max-w-md space-y-6">
 
-        <section class="card p-6 grid grid-cols-2 gap-4">
-            <div class="col-span-2 text-center border-b border-slate-100 pb-4 mb-2">
-                <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Daily Movement</h2>
-            </div>
-            <div class="text-center">
-                <div class="text-2xl font-black text-blue-600" id="step-count">8,432</div>
-                <div class="text-[9px] font-bold text-slate-400 uppercase">Steps Today</div>
-            </div>
-            <div class="text-center border-l border-slate-100">
-                <div class="text-2xl font-black text-orange-500" id="move-mins">42</div>
-                <div class="text-[9px] font-bold text-slate-400 uppercase">Active Mins</div>
-            </div>
-        </section>
+        <nav class="flex justify-around bg-slate-50 p-2 rounded-2xl border border-slate-100 shadow-sm">
+            <button onclick="switchTab('daily')" id="tab-daily" class="flex-1 py-2 text-[10px] font-black uppercase active-btn">Trainer</button>
+            <button onclick="switchTab('goals')" id="tab-goals" class="flex-1 py-2 text-[10px] font-black uppercase text-slate-400">Goals</button>
+            <button onclick="switchTab('plan')" id="tab-plan" class="flex-1 py-2 text-[10px] font-black uppercase text-slate-400">Plan</button>
+        </nav>
 
-        <section class="card p-6 text-center">
-            <h2 class="text-sm font-black text-slate-800 uppercase mb-4 italic">Tailored Training</h2>
-            <div id="workout-menu" class="space-y-3">
-                <button onclick="generatePersonalized('upper')" class="w-full border-2 border-blue-600 text-blue-600 py-5 rounded-2xl font-black uppercase text-xs">Customize Upper Body</button>
-                <button onclick="generatePersonalized('lower')" class="w-full border-2 border-blue-600 text-blue-600 py-5 rounded-2xl font-black uppercase text-xs">Customize Lower Body</button>
-                <button onclick="generatePersonalized('core')" class="w-full border-2 border-blue-600 text-blue-600 py-5 rounded-2xl font-black uppercase text-xs">Customize Core</button>
-            </div>
-            
-            <div id="active-workout" class="hidden text-left space-y-4">
-                <div class="flex justify-between items-center bg-blue-50 p-3 rounded-xl mb-4">
-                    <span id="active-title" class="text-blue-700 font-black uppercase text-[10px] italic"></span>
-                    <button onclick="resetMenu()" class="text-[10px] font-bold text-slate-400 uppercase underline">Change</button>
+        <div id="view-daily" class="space-y-6">
+            <section class="card p-6 shadow-sm border-l-4 border-blue-500">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-[10px] font-black text-blue-600 uppercase tracking-widest">Digital Trainer</h2>
+                    <span class="bg-blue-100 text-blue-600 px-2 py-1 rounded-lg text-[8px] font-black uppercase">Live</span>
                 </div>
-                <div id="exercise-list" class="space-y-3"></div>
-                <button onclick="logSession()" class="w-full btn-trainer py-5 uppercase text-xs mt-4">Log & Finish Session</button>
-            </div>
-        </section>
-
-        <section class="card p-6">
-            <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center mb-6 text-center">Workout Analytics</h2>
-            <div class="h-48 mb-6">
-                <canvas id="goalPieChart"></canvas>
-            </div>
-            <div class="grid grid-cols-2 gap-4 border-t border-slate-50 pt-4">
-                <div class="text-center">
-                    <div class="text-xl font-black text-slate-800" id="stat-workouts">--</div>
-                    <div class="text-[8px] font-bold text-slate-400 uppercase">Workouts Logged</div>
+                <div id="workout-menu" class="grid grid-cols-1 gap-3">
+                    <button onclick="generatePersonalized('upper')" class="w-full bg-white border border-slate-200 py-5 rounded-2xl font-black uppercase text-xs text-slate-700 shadow-sm">Upper Body</button>
+                    <button onclick="generatePersonalized('lower')" class="w-full bg-white border border-slate-200 py-5 rounded-2xl font-black uppercase text-xs text-slate-700 shadow-sm">Lower Body</button>
+                    <button onclick="generatePersonalized('core')" class="w-full bg-white border border-slate-200 py-5 rounded-2xl font-black uppercase text-xs text-slate-700 shadow-sm">Core Focus</button>
                 </div>
-                <div class="text-center border-l border-slate-50">
-                    <div class="text-xl font-black text-slate-800" id="stat-bmi">--</div>
-                    <div class="text-[8px] font-bold text-slate-400 uppercase">Current BMI</div>
+                <div id="active-workout" class="hidden space-y-4">
+                    <div id="exercise-list" class="space-y-3"></div>
+                    <button onclick="logSession()" class="w-full bg-blue-600 text-white font-black py-5 rounded-2xl uppercase text-xs shadow-lg">Complete Workout</button>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="card p-6">
-             <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center mb-4 text-center">Trainer Profile</h2>
-             <div class="grid grid-cols-2 gap-3 mb-4">
-                <input type="number" id="v-weight" placeholder="Weight" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl text-center font-bold">
-                <input type="number" id="v-height" placeholder="Height" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl text-center font-bold">
-            </div>
-            <select id="v-goal" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl text-sm font-black text-blue-600 uppercase text-center appearance-none mb-4">
-                <option value="Mass Gain">Mass Gain</option>
-                <option value="Core Definition">Core Definition</option>
-                <option value="General Wellness">General Wellness</option>
-            </select>
-            <button onclick="updateProfile()" class="w-full bg-slate-100 text-slate-600 font-black py-4 rounded-2xl uppercase text-[10px]">Update Stats</button>
-        </section>
+            <section class="card p-6">
+                <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center mb-4 italic">Movement Tracking</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="text-center bg-white p-4 rounded-2xl border border-slate-100">
+                        <i class="fas fa-shoe-prints text-blue-500 mb-1"></i>
+                        <div class="text-xl font-black text-slate-800">8,432</div>
+                        <div class="text-[8px] font-bold text-slate-400 uppercase">Steps</div>
+                    </div>
+                    <div class="text-center bg-white p-4 rounded-2xl border border-slate-100">
+                        <i class="fas fa-fire text-orange-500 mb-1"></i>
+                        <div class="text-xl font-black text-slate-800">42</div>
+                        <div class="text-[8px] font-bold text-slate-400 uppercase">Move Mins</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="view-goals" class="hidden space-y-6">
+            <section class="card p-6">
+                <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center mb-6">Muscle Insights</h2>
+                <div class="h-56">
+                    <canvas id="goalPieChart"></canvas>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mt-6 border-t border-slate-100 pt-6">
+                    <div class="text-center">
+                        <div class="text-lg font-black" id="stat-workouts">0</div>
+                        <div class="text-[8px] font-bold text-slate-400 uppercase">Sessions</div>
+                    </div>
+                    <div class="text-center border-l border-slate-100">
+                        <div class="text-lg font-black text-blue-600" id="stat-bmi">--</div>
+                        <div class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">BMI</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card p-6">
+                <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center mb-4">Vital Stats</h2>
+                <div class="flex gap-2 mb-4">
+                    <input type="number" id="v-weight" placeholder="LBS" class="flex-1 bg-white border border-slate-200 p-4 rounded-2xl text-center font-bold">
+                    <input type="number" id="v-height" placeholder="IN" class="flex-1 bg-white border border-slate-200 p-4 rounded-2xl text-center font-bold">
+                </div>
+                <select id="v-goal" class="w-full bg-white border border-slate-200 p-4 rounded-2xl text-[10px] font-black uppercase text-blue-600 appearance-none mb-4 text-center">
+                    <option value="Mass Gain">Mass Gain</option>
+                    <option value="Core Definition">Core Definition</option>
+                    <option value="General Wellness">General Wellness</option>
+                </select>
+                <button onclick="updateProfile()" class="w-full bg-blue-600 text-white font-black py-4 rounded-2xl uppercase text-[10px]">Sync Stats</button>
+            </section>
+        </div>
+
+        <div id="view-plan" class="hidden space-y-4">
+            <section class="card p-6">
+                <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center mb-4">Weekly Schedule</h2>
+                <div id="weekly-board" class="space-y-3"></div>
+            </section>
+        </div>
 
     </main>
 
     <script>
+        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         let history = JSON.parse(localStorage.getItem('strive_history')) || [];
         let profile = JSON.parse(localStorage.getItem('strive_profile')) || { weight: 170, height: 70, goal: 'General Wellness' };
+        let schedule = JSON.parse(localStorage.getItem('strive_schedule')) || { 'Monday': 'Full', 'Tuesday': 'No Workout', 'Wednesday': 'Full', 'Thursday': 'No Workout', 'Friday': 'Full', 'Saturday': 'Short', 'Sunday': 'No Workout' };
         let goalChart;
 
-        window.onload = function() { 
-            initGoalChart(); 
-            updateUI(); 
-            // Simulate wearable step count
-            document.getElementById('step-count').innerText = (Math.floor(Math.random() * 5000) + 4000).toLocaleString();
-        };
+        window.onload = function() { initGoalChart(); updateUI(); renderWeeklyBoard(); };
+
+        function switchTab(tab) {
+            ['daily', 'goals', 'plan'].forEach(t => document.getElementById('view-' + t).classList.add('hidden'));
+            document.getElementById('view-' + tab).classList.remove('hidden');
+            ['tab-daily', 'tab-goals', 'tab-plan'].forEach(b => document.getElementById(b).className = "flex-1 py-2 text-[10px] font-black uppercase text-slate-400");
+            document.getElementById('tab-' + tab).className = "flex-1 py-2 text-[10px] font-black uppercase active-btn";
+        }
 
         function updateProfile() {
             profile.weight = document.getElementById('v-weight').value || profile.weight;
@@ -107,12 +127,14 @@
             profile.goal = document.getElementById('v-goal').value;
             localStorage.setItem('strive_profile', JSON.stringify(profile));
             updateUI();
-            alert("Trainer Profile Updated!");
+            alert("Digital Trainer Updated");
         }
 
         function updateUI() {
-            const bmi = (703 * (profile.weight / (profile.height * profile.height))).toFixed(1);
-            document.getElementById('stat-bmi').innerText = bmi;
+            const h = parseFloat(profile.height);
+            const w = parseFloat(profile.weight);
+            const bmi = (703 * (w / (h * h))).toFixed(1);
+            document.getElementById('stat-bmi').innerText = isNaN(bmi) ? "--" : bmi;
             document.getElementById('stat-workouts').innerText = history.length;
             document.getElementById('v-weight').value = profile.weight;
             document.getElementById('v-height').value = profile.height;
@@ -122,29 +144,20 @@
         function generatePersonalized(mode) {
             document.getElementById('workout-menu').classList.add('hidden');
             document.getElementById('active-workout').classList.remove('hidden');
-            document.getElementById('active-title').innerText = `${mode} focus • ${profile.goal}`;
-
-            let sets = profile.goal === "Mass Gain" ? 4 : 3;
-            let reps = profile.goal === "Mass Gain" ? "6-8" : (profile.goal === "Core Definition" ? "20+" : "12");
-            
-            const exercises = {
-                upper: ['Bench Press', 'Overhead Press', 'Bent Over Rows', 'Dips', 'Lateral Raises'],
-                lower: ['Barbell Squats', 'RDLs', 'Walking Lunges', 'Calf Raises', 'Leg Press'],
-                core: ['Hanging Leg Raises', 'Cable Crunches', 'Plank Holds', 'Russian Twists', 'Deadbugs']
+            const sets = profile.goal === "Mass Gain" ? 4 : 3;
+            const reps = profile.goal === "Mass Gain" ? "6-8" : (profile.goal === "Core Definition" ? "20+" : "12");
+            const pool = { 
+                upper: ['Bench Press', 'Shoulder Press', 'Rows'], 
+                lower: ['Squats', 'Lunges', 'Deadlifts'], 
+                core: ['Plank', 'Twists', 'Leg Raises'] 
             };
-
-            const selected = exercises[mode].sort(() => 0.5 - Math.random()).slice(0, 4);
-
-            document.getElementById('exercise-list').innerHTML = selected.map(ex => `
-                <div class="p-5 card flex justify-between items-center">
+            document.getElementById('exercise-list').innerHTML = pool[mode].map(ex => `
+                <div class="p-4 bg-white border border-slate-100 rounded-2xl flex justify-between items-center shadow-sm">
                     <div>
-                        <span class="font-black uppercase text-[11px] text-slate-800 tracking-wider">${ex}</span>
-                        <div class="flex gap-2 mt-1">
-                            <span class="text-[9px] font-bold text-blue-600 uppercase bg-blue-50 px-2 py-0.5 rounded">${sets} Sets</span>
-                            <span class="text-[9px] font-bold text-blue-600 uppercase bg-blue-50 px-2 py-0.5 rounded">${reps} Reps</span>
-                        </div>
+                        <span class="font-black uppercase text-[10px] text-slate-800">${ex}</span>
+                        <div class="text-[8px] font-bold text-blue-600 uppercase mt-1">${sets} Sets x ${reps} Reps</div>
                     </div>
-                    <i class="fas fa-dumbbell text-slate-200 text-xl"></i>
+                    <i class="fas fa-check-circle text-slate-200"></i>
                 </div>`).join('');
         }
 
@@ -153,24 +166,29 @@
             goalChart = new Chart(ctx, {
                 type: 'pie',
                 data: {
-                    labels: ['Chest', 'Back', 'Legs', 'Abs', 'Arms', 'Shoulders'],
+                    labels: ['Chest', 'Back', 'Legs', 'Abs', 'Arms'],
                     datasets: [{
-                        data: [15, 15, 25, 20, 15, 10],
-                        backgroundColor: ['#2563EB', '#3B82F6', '#60A5FA', '#93C5FD', '#BFDBFE', '#DBEAFE'],
-                        borderWidth: 2,
-                        borderColor: '#ffffff'
+                        data: [20, 20, 20, 20, 20],
+                        backgroundColor: ['#2563EB', '#3B82F6', '#60A5FA', '#93C5FD', '#BFDBFE'],
+                        borderWidth: 0
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 9, weight: '800' }, color: '#94A3B8', padding: 15 } } } }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 8, weight: 'bold' }, color: '#94A3B8' } } } }
             });
+        }
+
+        function renderWeeklyBoard() {
+            document.getElementById('weekly-board').innerHTML = days.map(day => `
+                <div class="flex justify-between items-center p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
+                    <span class="text-[9px] font-black uppercase text-slate-400">${day}</span>
+                    <span class="text-[9px] font-black uppercase text-slate-800">${schedule[day]}</span>
+                </div>`).join('');
         }
 
         function logSession() {
             history.push({ date: new Date().toLocaleDateString() });
             localStorage.setItem('strive_history', JSON.stringify(history));
-            alert("Personal Training Session Logged!");
-            resetMenu();
-            updateUI();
+            location.reload();
         }
 
         function resetMenu() {
