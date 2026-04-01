@@ -3,107 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Strive | V3 Personal Coach</title>
+    <title>Strive | Smart Trainer</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #FFFFFF; color: #1E293B; font-family: 'Quicksand', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .dashboard-hero { background: linear-gradient(rgba(59, 130, 246, 0.8), rgba(30, 64, 175, 0.9)), url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80'); background-size: cover; background-position: center; }
-        .card { background: #F8FAFC; border-radius: 32px; border: 1px solid #F1F5F9; }
-        .active-tab { background: #3B82F6; color: white !important; border-radius: 16px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
-        .avatar-box { width: 90px; height: 90px; border-radius: 50%; border: 4px solid white; display: flex; align-items: center; justify-content: center; overflow: hidden; margin: 0 auto; transition: all 0.3s; }
-        .color-dot { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        body { background-color: #FFFFFF; color: #1E293B; font-family: 'Quicksand', sans-serif; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+        .hero-bg { background: linear-gradient(rgba(59, 130, 246, 0.8), rgba(30, 64, 175, 0.9)), url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80'); background-size: cover; background-position: center; }
+        .card { background: #F8FAFC; border-radius: 28px; border: 1px solid #F1F5F9; }
+        .active-tab { background: #3B82F6; color: white !important; border-radius: 14px; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2); }
+        .tutorial-box { background: #EFF6FF; border: 1px dashed #3B82F6; border-radius: 16px; padding: 12px; margin-top: 8px; font-size: 10px; line-height: 1.4; color: #1E40AF; }
+        .avatar-circle { width: 70px; height: 70px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; margin: 0 auto; background: #DBEAFE; }
     </style>
 </head>
-<body class="pb-24">
+<body class="pb-20">
 
-    <header class="dashboard-hero text-white p-10 text-center rounded-b-[4rem] shadow-2xl mb-4">
-        <div class="flex justify-between items-center mb-6">
-            <i class="fas fa-bell text-white/80 text-xl" onclick="switchTab('goals')"></i>
-            <h1 class="text-2xl font-bold italic tracking-tight">Strive V3</h1>
-            <i class="fas fa-cog text-white/80 text-xl" onclick="switchTab('goals')"></i>
+    <header class="hero-bg text-white p-6 pb-10 text-center rounded-b-[3rem] shadow-xl mb-4">
+        <div class="flex justify-between items-center mb-4">
+            <i class="fas fa-bell text-white/70" onclick="switchTab('goals')"></i>
+            <h1 class="text-xl font-bold italic tracking-tight">Strive Intel</h1>
+            <i class="fas fa-cog text-white/70" onclick="switchTab('goals')"></i>
         </div>
-
-        <div class="avatar-box mb-4 shadow-lg" id="main-avatar">
-            <i class="fas fa-user-ninja text-4xl" id="avatar-icon"></i>
+        <div class="avatar-circle mb-3" id="main-avatar">
+            <i class="fas fa-user-ninja text-3xl" id="avatar-icon"></i>
         </div>
-        
-        <div class="mt-2 bg-white/10 p-5 rounded-[2rem] backdrop-blur-sm border border-white/10">
-            <div class="flex justify-between text-[10px] font-bold uppercase mb-2 tracking-widest text-white/90">
+        <div class="max-w-[180px] mx-auto bg-white/10 p-3 rounded-2xl backdrop-blur-sm border border-white/10">
+            <div class="flex justify-between text-[8px] font-bold uppercase mb-1">
                 <span>Weekly Energy</span>
                 <span id="progress-text">0%</span>
             </div>
-            <div class="w-full bg-white/20 h-2 rounded-full overflow-hidden">
+            <div class="w-full bg-white/20 h-1.5 rounded-full overflow-hidden">
                 <div id="progress-fill" class="bg-white h-full transition-all duration-1000" style="width: 5%"></div>
             </div>
         </div>
     </header>
 
-    <main class="container mx-auto px-6 max-w-md space-y-6">
+    <main class="container mx-auto px-4 max-w-md space-y-4">
 
-        <nav class="flex justify-around bg-slate-50 p-2 rounded-2xl border border-slate-100 shadow-sm">
-            <button onclick="switchTab('goals')" id="tab-goals" class="flex-1 py-3 text-[11px] font-bold uppercase active-tab">Dash</button>
-            <button onclick="switchTab('daily')" id="tab-daily" class="flex-1 py-3 text-[11px] font-bold uppercase text-slate-400">Coach</button>
-            <button onclick="switchTab('plan')" id="tab-plan" class="flex-1 py-3 text-[11px] font-bold uppercase text-slate-400">Plan</button>
+        <nav class="flex justify-around bg-slate-50 p-1.5 rounded-2xl border border-slate-100 shadow-sm">
+            <button onclick="switchTab('goals')" id="tab-goals" class="flex-1 py-2.5 text-[10px] font-bold uppercase active-tab">Dash</button>
+            <button onclick="switchTab('daily')" id="tab-daily" class="flex-1 py-2.5 text-[10px] font-bold uppercase text-slate-400">Train</button>
+            <button onclick="switchTab('plan')" id="tab-plan" class="flex-1 py-2.5 text-[10px] font-bold uppercase text-slate-400">Plan</button>
         </nav>
 
-        <div id="view-goals" class="space-y-6">
-            <section class="card p-7 text-center">
-                <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Design Your Persona</h2>
-                <div class="flex justify-center gap-4 mb-6">
-                    <div class="color-dot bg-blue-500" onclick="changeAvatar('#3B82F6', 'fa-user-ninja')"></div>
-                    <div class="color-dot bg-orange-500" onclick="changeAvatar('#F97316', 'fa-user-astronaut')"></div>
-                    <div class="color-dot bg-emerald-500" onclick="changeAvatar('#10B981', 'fa-user-tie')"></div>
-                    <div class="color-dot bg-purple-500" onclick="changeAvatar('#A855F7', 'fa-user-secret')"></div>
-                </div>
-                <div class="flex justify-center gap-6 border-t border-slate-50 pt-6 mt-2">
-                    <div><div class="text-xl font-bold text-slate-800" id="stat-workouts">0</div><div class="text-[8px] font-bold text-slate-400 uppercase">Sessions</div></div>
-                    <div class="border-l border-slate-50 pl-6"><div class="text-xl font-bold text-blue-500" id="stat-bmi">--</div><div class="text-[8px] font-bold text-slate-400 uppercase">BMI</div></div>
+        <div id="view-goals" class="space-y-4">
+            <section class="card p-5 text-center">
+                <div class="grid grid-cols-2 gap-4">
+                    <div><div class="text-xl font-bold text-slate-800" id="stat-workouts">0</div><div class="text-[8px] font-bold text-slate-400 uppercase">Workouts</div></div>
+                    <div class="border-l border-slate-100 pl-4"><div class="text-xl font-bold text-blue-500" id="stat-bmi">--</div><div class="text-[8px] font-bold text-slate-400 uppercase">BMI</div></div>
                 </div>
             </section>
 
-            <section class="card p-7">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nudge Alert Time</h2>
-                    <i class="fas fa-clock text-blue-500"></i>
+            <section class="card p-5">
+                <h2 class="text-[9px] font-bold text-slate-400 uppercase tracking-widest text-center mb-3">Trainer Settings</h2>
+                <div class="space-y-2">
+                    <select id="v-level" class="w-full bg-white border border-slate-200 p-3 rounded-xl text-[11px] font-bold uppercase text-blue-600 appearance-none text-center" onchange="updateProfile()">
+                        <option value="Beginner">Beginner Level</option>
+                        <option value="Pro">Pro Level</option>
+                        <option value="Advanced">Advanced Level</option>
+                    </select>
+                    <div class="flex gap-2">
+                        <input type="number" id="v-weight" placeholder="Weight" class="flex-1 bg-white border border-slate-200 p-3 rounded-xl text-center text-xs font-bold">
+                        <input type="number" id="v-height" placeholder="Height" class="flex-1 bg-white border border-slate-200 p-3 rounded-xl text-center text-xs font-bold">
+                    </div>
                 </div>
-                <input type="time" id="v-alert" class="w-full bg-white border border-slate-200 p-4 rounded-2xl text-center font-bold text-blue-600 shadow-inner" onchange="saveAlert()">
-            </section>
-
-            <section class="card p-7">
-                <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-4">Coach Profile</h2>
-                <select id="v-level" class="w-full bg-white border border-slate-200 p-4 rounded-2xl text-xs font-bold uppercase text-blue-600 appearance-none text-center mb-3">
-                    <option value="Beginner">Beginner</option><option value="Pro">Pro</option><option value="Advanced">Advanced</option>
-                </select>
-                <div class="flex gap-2">
-                    <input type="number" id="v-weight" placeholder="LBS" class="flex-1 bg-white border border-slate-200 p-4 rounded-2xl text-center font-bold">
-                    <input type="number" id="v-height" placeholder="IN" class="flex-1 bg-white border border-slate-200 p-4 rounded-2xl text-center font-bold">
-                </div>
-                <button onclick="updateProfile()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl uppercase text-[10px] mt-4 shadow-lg">Sync & Save</button>
             </section>
         </div>
 
-        <div id="view-daily" class="hidden space-y-6">
-            <section class="card p-8 border-t-8 border-blue-500">
-                <h2 class="text-sm font-bold text-slate-800 mb-2 italic">Coach's Plan</h2>
-                <p id="rec-text" class="text-[10px] text-slate-400 font-bold uppercase mb-6 italic tracking-tight">Personalizing your sets...</p>
-                <div id="workout-menu" class="space-y-4">
-                    <button id="rec-btn" onclick="generatePersonalized()" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl uppercase text-xs shadow-lg">Start Daily Session</button>
+        <div id="view-daily" class="hidden space-y-4">
+            <section class="card p-6 border-t-4 border-blue-500">
+                <h2 id="rec-text" class="text-sm font-bold text-slate-800 mb-1">Your Coach is Ready</h2>
+                <p id="sub-rec" class="text-[9px] text-slate-400 font-bold uppercase mb-4 italic">Tailoring sets to your history...</p>
+                
+                <div id="workout-menu" class="space-y-3">
+                    <button id="rec-btn" onclick="generateIntelligentWorkout()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl uppercase text-xs shadow-lg">Begin Tailored Session</button>
+                    <p class="text-[8px] text-center text-slate-400 uppercase tracking-tight">Workout based on your Plan + Profile</p>
                 </div>
-                <div id="active-workout" class="hidden space-y-4">
+
+                <div id="active-workout" class="hidden space-y-3">
                     <div id="exercise-list" class="space-y-3"></div>
-                    <button onclick="logSession()" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl uppercase text-xs">Finish Workout</button>
+                    <button onclick="logSession()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl uppercase text-xs mt-2">Finish Session</button>
                 </div>
             </section>
         </div>
 
-        <div id="view-plan" class="hidden space-y-4">
-            <section class="card p-8">
-                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest text-center mb-2">Weekly Schedule</h2>
-                <p class="text-[9px] text-center text-slate-400 mb-6 italic">Tap any day to toggle workout types</p>
-                <div id="weekly-board" class="space-y-3"></div>
+        <div id="view-plan" class="hidden space-y-3">
+            <section class="card p-5">
+                <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-4">Weekly Logic</h2>
+                <div id="weekly-board" class="space-y-2"></div>
             </section>
         </div>
     </main>
@@ -112,33 +99,59 @@
         const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         const types = ['Rest', 'Upper Body', 'Lower Body', 'Full Body', 'Core'];
         let history = JSON.parse(localStorage.getItem('strive_history')) || [];
-        let profile = JSON.parse(localStorage.getItem('strive_profile')) || { weight: 170, height: 70, level: 'Beginner', alertTime: '08:00', avatarColor: '#3B82F6', avatarIcon: 'fa-user-ninja' };
+        let profile = JSON.parse(localStorage.getItem('strive_profile')) || { weight: 170, height: 70, level: 'Beginner' };
         let schedule = JSON.parse(localStorage.getItem('strive_schedule')) || { 'Monday': 'Upper Body', 'Tuesday': 'Rest', 'Wednesday': 'Lower Body', 'Thursday': 'Rest', 'Friday': 'Full Body', 'Saturday': 'Core', 'Sunday': 'Rest' };
+
+        // INTELLIGENT EXERCISE POOL (Level Dependent)
+        const exerciseData = {
+            upper: {
+                Beginner: [{name: 'Wall Pushups', steps: 'Hands against wall, lower chest slowly, push back.'}, {name: 'Arm Circles', steps: 'Extend arms, rotate in small circles for 30s.'}],
+                Pro: [{name: 'Standard Pushups', steps: 'Plank position, lower until chest nears floor.'}, {name: 'Dumbbell Rows', steps: 'Pull weight toward hip, squeeze back.'}],
+                Advanced: [{name: 'Diamond Pushups', steps: 'Hands in diamond shape, lower chest to hands.'}, {name: 'Pullups', steps: 'Hang from bar, pull chin above bar.'}]
+            },
+            lower: {
+                Beginner: [{name: 'Chair Squats', steps: 'Lower hips until you touch a chair, then stand.'}, {name: 'Glute Bridges', steps: 'Lie on back, lift hips toward ceiling.'}],
+                Pro: [{name: 'Bodyweight Squats', steps: 'Hips back, thighs parallel to floor.'}, {name: 'Lunges', steps: 'Step forward, lower back knee to floor.'}],
+                Advanced: [{name: 'Jump Squats', steps: 'Explosive squat, landing softly.'}, {name: 'Pistol Squats', steps: 'Squat on one leg while holding other leg out.'}]
+            }
+        };
 
         window.onload = function() { updateUI(); renderWeeklyBoard(); setDailyRecommendation(); updateGamification(); };
 
         function switchTab(tab) {
             ['daily', 'plan', 'goals'].forEach(t => document.getElementById('view-' + t).classList.add('hidden'));
             document.getElementById('view-' + tab).classList.remove('hidden');
-            ['tab-daily', 'tab-plan', 'tab-goals'].forEach(b => document.getElementById(b).className = "flex-1 py-3 text-[11px] font-bold uppercase text-slate-400");
-            document.getElementById('tab-' + tab).className = "flex-1 py-3 text-[11px] font-bold uppercase active-tab";
+            ['tab-daily', 'tab-plan', 'tab-goals'].forEach(b => document.getElementById(b).className = "flex-1 py-2.5 text-[10px] font-bold uppercase text-slate-400");
+            document.getElementById('tab-' + tab).className = "flex-1 py-2.5 text-[10px] font-bold uppercase active-tab";
         }
 
-        function changeAvatar(color, icon) {
-            profile.avatarColor = color; profile.avatarIcon = icon;
-            updateAvatarUI();
-            localStorage.setItem('strive_profile', JSON.stringify(profile));
-        }
+        function generateIntelligentWorkout() {
+            document.getElementById('workout-menu').classList.add('hidden');
+            document.getElementById('active-workout').classList.remove('hidden');
+            const today = days[(new Date().getDay() + 6) % 7];
+            const mode = schedule[today].split(' ')[0].toLowerCase();
+            const level = profile.level;
+            
+            // LOGIC: Scaling Sets based on Workout Frequency
+            const workoutFrequency = history.filter(h => {
+                const d = new Date(h.date);
+                const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+                return d > weekAgo;
+            }).length;
 
-        function updateAvatarUI() {
-            document.getElementById('main-avatar').style.backgroundColor = profile.avatarColor;
-            document.getElementById('avatar-icon').className = `fas ${profile.avatarIcon} text-4xl text-white`;
-        }
+            let baseSets = level === 'Advanced' ? 5 : (level === 'Pro' ? 4 : 3);
+            if (workoutFrequency > 4) baseSets += 1; // Reward consistency with higher volume
 
-        function saveAlert() {
-            profile.alertTime = document.getElementById('v-alert').value;
-            localStorage.setItem('strive_profile', JSON.stringify(profile));
-            alert(`Nudge set for ${profile.alertTime}!`);
+            const list = exerciseData[mode] ? exerciseData[mode][level] : exerciseData['upper'][level];
+            
+            document.getElementById('exercise-list').innerHTML = list.map(ex => `
+                <div class="p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold uppercase text-[10px] text-slate-800">${ex.name}</span>
+                        <span class="text-[9px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg">${baseSets} x 12</span>
+                    </div>
+                    ${level === 'Beginner' ? `<div class="tutorial-box"><i class="fas fa-info-circle mr-1"></i> ${ex.steps}</div>` : ''}
+                </div>`).join('');
         }
 
         function toggleDay(day) {
@@ -151,9 +164,9 @@
         function renderWeeklyBoard() {
             const today = days[(new Date().getDay() + 6) % 7];
             document.getElementById('weekly-board').innerHTML = days.map(day => `
-                <div onclick="toggleDay('${day}')" class="flex justify-between p-5 bg-white border border-slate-100 rounded-3xl ${day === today ? 'border-blue-500 bg-blue-50' : ''}">
-                    <span class="text-[11px] font-bold uppercase ${day === today ? 'text-blue-600' : 'text-slate-400'}">${day}</span>
-                    <span class="text-[11px] font-bold uppercase text-slate-800 italic">${schedule[day]}</span>
+                <div onclick="toggleDay('${day}')" class="flex justify-between p-4 bg-white border border-slate-100 rounded-2xl ${day === today ? 'border-blue-500 bg-blue-50' : ''}">
+                    <span class="text-[10px] font-bold uppercase ${day === today ? 'text-blue-600' : 'text-slate-400'}">${day}</span>
+                    <span class="text-[10px] font-bold uppercase text-slate-800">${schedule[day]}</span>
                 </div>`).join('');
         }
 
@@ -161,9 +174,9 @@
             const today = days[(new Date().getDay() + 6) % 7];
             const plan = schedule[today];
             const btn = document.getElementById('rec-btn');
-            document.getElementById('rec-text').innerText = plan === 'Rest' ? "Recovery Day. Take it easy!" : `Coach Suggests: ${plan}`;
-            if(plan === 'Rest') { btn.disabled = true; btn.className = "w-full bg-slate-100 text-slate-300 py-5 rounded-2xl uppercase font-bold text-xs"; btn.innerText = "Resting"; }
-            else { btn.disabled = false; btn.className = "w-full bg-blue-600 text-white py-5 rounded-2xl uppercase font-bold text-xs"; btn.innerText = "Start Session"; }
+            document.getElementById('rec-text').innerText = plan === 'Rest' ? "Recovery Window Active" : `Today's Protocol: ${plan}`;
+            if(plan === 'Rest') { btn.disabled = true; btn.className = "w-full bg-slate-100 text-slate-300 py-4 rounded-xl uppercase font-bold text-xs"; btn.innerText = "Resting Today"; }
+            else { btn.disabled = false; btn.className = "w-full bg-blue-600 text-white py-4 rounded-xl uppercase font-bold text-xs"; btn.innerText = "Begin Tailored Session"; }
         }
 
         function updateProfile() {
@@ -171,7 +184,7 @@
             profile.height = document.getElementById('v-height').value || profile.height;
             profile.level = document.getElementById('v-level').value;
             localStorage.setItem('strive_profile', JSON.stringify(profile));
-            updateUI(); alert("Coach Profile Updated!");
+            updateUI();
         }
 
         function updateUI() {
@@ -181,23 +194,6 @@
             document.getElementById('v-level').value = profile.level;
             document.getElementById('v-weight').value = profile.weight;
             document.getElementById('v-height').value = profile.height;
-            document.getElementById('v-alert').value = profile.alertTime;
-            updateAvatarUI();
-        }
-
-        function generatePersonalized() {
-            document.getElementById('workout-menu').classList.add('hidden');
-            document.getElementById('active-workout').classList.remove('hidden');
-            const today = days[(new Date().getDay() + 6) % 7];
-            const mode = schedule[today].split(' ')[0].toLowerCase();
-            const pool = { upper: ['Pushups', 'Rows', 'Shoulders'], lower: ['Squats', 'Lunges', 'Step-ups'], full: ['Burpees', 'Jumps', 'Mountain Climbers'], core: ['Crunches', 'Plank', 'Deadbugs'] };
-            let sets = profile.level === 'Advanced' ? 5 : (profile.level === 'Pro' ? 4 : 3);
-            document.getElementById('exercise-list').innerHTML = (pool[mode] || pool['full']).map(ex => `
-                <div class="p-5 bg-white border border-slate-50 rounded-3xl flex justify-between items-center">
-                    <div><span class="font-bold uppercase text-[11px] text-slate-800">${ex}</span>
-                    <div class="text-[9px] font-bold text-blue-500 uppercase mt-1">${sets} Sets x 12 Reps</div></div>
-                    <i class="fas fa-check-circle text-blue-50"></i>
-                </div>`).join('');
         }
 
         function updateGamification() {
@@ -206,7 +202,11 @@
             document.getElementById('progress-text').innerText = progress + '%';
         }
 
-        function logSession() { history.push({ date: new Date().toLocaleDateString() }); localStorage.setItem('strive_history', JSON.stringify(history)); location.reload(); }
+        function logSession() { 
+            history.push({ date: new Date().toLocaleDateString() }); 
+            localStorage.setItem('strive_history', JSON.stringify(history)); 
+            location.reload(); 
+        }
     </script>
 </body>
 </html>
