@@ -3,113 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Strive | V5 Strict Edition</title>
+    <title>Strive V7 | Strict Contrast</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #FFFFFF; --text: #1E293B; --card: #F8FAFC; --border: #F1F5F9; --nav: #F1F5F9; --btn: #E2E8F0; }
-        .dark { --bg: #1A1C1E; --text: #F8FAFC; --card: #2D3135; --border: #3D4145; --nav: #2D3135; --btn: #3D4145; }
+        /* 100% STRICT LIGHT MODE */
+        :root { 
+            --bg-main: #F4F7F9; 
+            --card-bg: #FFFFFF; 
+            --text-main: #0F172A; 
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --element-bg: #F8FAFC;
+        }
+        /* 100% STRICT DARK MODE */
+        .dark { 
+            --bg-main: #0B1120; 
+            --card-bg: #1E293B; 
+            --text-main: #F8FAFC; 
+            --text-muted: #94A3B8;
+            --border-color: #334155;
+            --element-bg: #0F172A;
+        }
         
-        body { background-color: var(--bg); color: var(--text); font-family: 'Quicksand', sans-serif; transition: background 0.3s, color 0.3s; overflow-x: hidden; }
-        .hero-bg { background: linear-gradient(rgba(59, 130, 246, 0.85), rgba(30, 64, 175, 0.95)), url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80'); background-size: cover; background-position: center; }
-        .card { background: var(--card); border-radius: 32px; border: 1px solid var(--border); }
-        .nav-container { background: var(--nav); border-radius: 20px; }
-        .active-tab { background: #3B82F6; color: white !important; border-radius: 16px; }
-        .badge-box { background: var(--btn); border-radius: 24px; transition: all 0.3s; opacity: 0.3; filter: grayscale(1); }
-        .badge-active { opacity: 1 !important; filter: grayscale(0) !important; border: 2px solid #3B82F6; }
-        .tutorial-box { background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3B82F6; padding: 10px; font-size: 10px; border-radius: 8px; margin-top: 5px; }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Quicksand', sans-serif; transition: background-color 0.3s, color 0.3s; -webkit-tap-highlight-color: transparent; }
+        .hero-bg { background: linear-gradient(135deg, #3B82F6, #1D4ED8); }
+        .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 2rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); transition: background-color 0.3s, border-color 0.3s; }
+        
+        /* NAVIGATION */
+        .nav-container { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 1.5rem; padding: 0.5rem; }
+        .nav-btn { color: var(--text-muted); font-weight: 700; border-radius: 1rem; transition: all 0.2s; }
+        .active-tab { background-color: #3B82F6; color: #FFFFFF !important; }
+        
+        /* PLAN TAB - CLEAN & CONSISTENT */
+        .day-row { background-color: var(--element-bg); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 1.25rem; padding: 1.25rem 1.5rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; font-weight: 900; cursor: pointer; transition: all 0.2s; }
+        .day-active { border-color: #3B82F6; background-color: rgba(59, 130, 246, 0.1); color: #3B82F6; }
+        
+        /* BADGES */
+        .badge-box { background-color: var(--element-bg); border: 1px solid var(--border-color); border-radius: 1.5rem; padding: 1rem; text-align: center; opacity: 0.5; filter: grayscale(1); transition: all 0.3s; }
+        .badge-unlocked { opacity: 1; filter: grayscale(0); border-color: #3B82F6; background-color: rgba(59, 130, 246, 0.05); }
+        
+        /* TUTORIALS */
+        .tutorial-box { background-color: rgba(59, 130, 246, 0.1); border-left: 4px solid #3B82F6; padding: 12px; margin-top: 10px; font-size: 11px; border-radius: 0 8px 8px 0; color: var(--text-main); }
     </style>
 </head>
 <body class="pb-20">
 
-    <header class="hero-bg text-white p-8 pb-12 text-center rounded-b-[4rem] shadow-2xl mb-4">
-        <div class="flex justify-between items-center mb-6">
-            <i class="fas fa-bell opacity-70" onclick="alert('Notification: Check your custom alert time in settings!')"></i>
-            <h1 class="text-xl font-bold italic tracking-tighter">STRIVE V5</h1>
-            <i class="fas fa-cog opacity-70" onclick="toggleSettings()"></i>
+    <header class="hero-bg text-white p-8 pb-12 rounded-b-[3rem] shadow-xl mb-6 relative">
+        <div class="absolute top-6 right-6 flex gap-4">
+            <i class="fas fa-moon text-xl opacity-80 cursor-pointer" onclick="toggleDarkMode()"></i>
+            <i class="fas fa-cog text-xl opacity-80 cursor-pointer" onclick="toggleSettings()"></i>
         </div>
-        <div class="w-20 h-20 rounded-full border-4 border-white mx-auto mb-4 flex items-center justify-center bg-blue-100/20" id="main-avatar">
-            <i class="fas fa-user-ninja text-3xl" id="avatar-icon"></i>
-        </div>
-        <div class="max-w-[200px] mx-auto bg-white/10 p-4 rounded-3xl backdrop-blur-md border border-white/10">
-            <div class="flex justify-between text-[8px] font-bold uppercase mb-1">
-                <span>Power Goal</span>
-                <span id="progress-text">0%</span>
+        
+        <h1 class="text-2xl font-black tracking-tight mt-4 mb-2 text-center">Strive V7</h1>
+        
+        <div class="max-w-[240px] mx-auto bg-white/20 p-4 rounded-2xl backdrop-blur-sm border border-white/20 mt-6">
+            <div class="flex justify-between text-[10px] font-bold uppercase mb-2 tracking-widest">
+                <span>Power Goal</span><span id="progress-text">0%</span>
             </div>
             <div class="w-full bg-white/20 h-2 rounded-full overflow-hidden">
-                <div id="progress-fill" class="bg-white h-full transition-all duration-1000" style="width: 0%"></div>
+                <div id="progress-fill" class="bg-white h-full transition-all duration-700" style="width: 0%"></div>
             </div>
         </div>
     </header>
 
-    <main class="container mx-auto px-5 max-w-md space-y-4">
+    <main class="container mx-auto px-5 max-w-md space-y-6">
 
-        <nav class="nav-container p-1.5 flex justify-around shadow-sm">
-            <button onclick="switchTab('goals')" id="tab-goals" class="flex-1 py-3 text-[10px] font-bold uppercase active-tab">Dash</button>
-            <button onclick="switchTab('daily')" id="tab-daily" class="flex-1 py-3 text-[10px] font-bold uppercase text-slate-400">Train</button>
-            <button onclick="switchTab('plan')" id="tab-plan" class="flex-1 py-3 text-[10px] font-bold uppercase text-slate-400">Plan</button>
+        <nav class="nav-container flex justify-between shadow-sm mb-6">
+            <button onclick="switchTab('goals')" id="tab-goals" class="nav-btn flex-1 py-3 text-xs uppercase tracking-wider active-tab">Dash</button>
+            <button onclick="switchTab('daily')" id="tab-daily" class="nav-btn flex-1 py-3 text-xs uppercase tracking-wider">Train</button>
+            <button onclick="switchTab('plan')" id="tab-plan" class="nav-btn flex-1 py-3 text-xs uppercase tracking-wider">Plan</button>
         </nav>
 
         <div id="settings-panel" class="hidden space-y-4">
-            <section class="card p-7 shadow-2xl">
+            <section class="card p-7">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xs font-bold uppercase tracking-widest text-blue-500">System Settings</h2>
-                    <i class="fas fa-times opacity-50" onclick="toggleSettings()"></i>
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-blue-500">System Preferences</h2>
+                    <i class="fas fa-times text-[var(--text-muted)] text-lg cursor-pointer" onclick="toggleSettings()"></i>
                 </div>
-                <div class="space-y-5">
-                    <div class="flex justify-between items-center p-4 bg-black/5 dark:bg-white/5 rounded-2xl">
-                        <span class="text-[10px] font-bold uppercase">Appearance</span>
-                        <button onclick="toggleDarkMode()" class="bg-blue-600 text-white text-[9px] px-4 py-2 rounded-xl font-bold uppercase">Toggle Mode</button>
+                
+                <div class="space-y-4">
+                    <div class="p-4 bg-[var(--element-bg)] border border-[var(--border-color)] rounded-2xl">
+                        <label class="text-[10px] font-bold uppercase text-[var(--text-muted)] block mb-2">Fitness Level</label>
+                        <select id="v-level" class="w-full bg-transparent font-bold text-blue-500 outline-none" onchange="updateProfile()">
+                            <option value="Beginner">Beginner (Tutorials On)</option>
+                            <option value="Pro">Pro</option>
+                            <option value="Advanced">Advanced</option>
+                        </select>
                     </div>
-                    <div class="p-4 bg-black/5 dark:bg-white/5 rounded-2xl">
-                        <p class="text-[9px] font-bold uppercase opacity-50 mb-3 text-center">Avatar Color</p>
-                        <div class="flex justify-center gap-4">
-                            <div class="w-6 h-6 bg-blue-500 rounded-full" onclick="changeAvatar('#3B82F6', 'fa-user-ninja')"></div>
-                            <div class="w-6 h-6 bg-orange-500 rounded-full" onclick="changeAvatar('#F97316', 'fa-user-astronaut')"></div>
-                            <div class="w-6 h-6 bg-purple-500 rounded-full" onclick="changeAvatar('#A855F7', 'fa-user-secret')"></div>
-                        </div>
+                    
+                    <div class="p-4 bg-[var(--element-bg)] border border-[var(--border-color)] rounded-2xl">
+                        <label class="text-[10px] font-bold uppercase text-[var(--text-muted)] block mb-2">Notification Time</label>
+                        <input type="time" id="v-alert" class="w-full bg-transparent font-bold text-blue-500 outline-none" onchange="updateProfile()">
                     </div>
-                    <select id="v-level" class="w-full bg-transparent border border-blue-500/20 p-4 rounded-2xl text-[10px] font-bold uppercase text-blue-500" onchange="updateProfile()">
-                        <option value="Beginner">Beginner</option>
-                        <option value="Pro">Pro</option>
-                        <option value="Advanced">Advanced</option>
-                    </select>
-                    <button onclick="toggleSettings()" class="w-full bg-blue-600 text-white p-4 rounded-2xl text-[10px] font-bold uppercase">Save & Close</button>
+
+                    <button onclick="toggleSettings()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl uppercase text-xs">Save Settings</button>
                 </div>
             </section>
         </div>
 
-        <div id="view-goals" class="space-y-4">
+        <div id="view-goals" class="space-y-6 block">
             <section class="card p-7 text-center">
-                <div class="h-44 mb-6"><canvas id="goalPieChart"></canvas></div>
-                <div class="grid grid-cols-2 gap-4 pt-6 border-t border-black/5 dark:border-white/5">
-                    <div><div class="text-2xl font-bold" id="stat-workouts">0</div><div class="text-[9px] font-bold opacity-50 uppercase">Workouts</div></div>
-                    <div class="border-l border-black/5 dark:border-white/5 pl-4"><div class="text-2xl font-bold text-blue-500" id="stat-bmi">--</div><div class="text-[9px] font-bold opacity-50 uppercase">BMI</div></div>
+                <div class="h-40 mb-6"><canvas id="goalPieChart"></canvas></div>
+                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-[var(--border-color)]">
+                    <div><div class="text-2xl font-black" id="stat-workouts">0</div><div class="text-[9px] font-bold text-[var(--text-muted)] uppercase">Sessions</div></div>
+                    <div class="border-l border-[var(--border-color)]"><div class="text-2xl font-black text-blue-500" id="stat-level">--</div><div class="text-[9px] font-bold text-[var(--text-muted)] uppercase">Level</div></div>
                 </div>
             </section>
 
             <section class="card p-7">
-                <h2 class="text-[10px] font-bold opacity-50 uppercase tracking-widest text-center mb-6">Milestone Badges</h2>
-                <div class="grid grid-cols-2 gap-3" id="badge-grid">
-                    </div>
+                <h2 class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest text-center mb-6">Your Milestones</h2>
+                <div class="grid grid-cols-2 gap-4" id="badge-grid"></div>
             </section>
         </div>
 
         <div id="view-daily" class="hidden space-y-4">
             <section class="card p-7 border-t-4 border-blue-500">
-                <h2 id="rec-text" class="text-sm font-bold mb-1 italic">Personalized Logic</h2>
-                <p id="level-indicator" class="text-[9px] text-blue-500 font-bold uppercase mb-4"></p>
-                <div id="workout-menu"><button onclick="generateIntelligentWorkout()" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl uppercase text-xs shadow-lg">Start Session</button></div>
-                <div id="active-workout" class="hidden space-y-4"><div id="exercise-list" class="space-y-3"></div><button onclick="logSession()" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl uppercase text-xs">Finish Workout</button></div>
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-sm font-black mb-1">Today's Protocol</h2>
+                        <p id="level-indicator" class="text-[10px] text-[var(--text-muted)] font-bold uppercase"></p>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-[var(--element-bg)] text-blue-500 border border-[var(--border-color)] flex items-center justify-center text-xl"><i class="fas fa-play"></i></div>
+                </div>
+                
+                <div id="workout-menu"><button onclick="startWorkout()" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl uppercase text-xs shadow-lg">Start Session</button></div>
+                <div id="active-workout" class="hidden space-y-4"><div id="exercise-list" class="space-y-3"></div><button onclick="logSession()" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl uppercase text-xs">Finish & Log</button></div>
             </section>
         </div>
 
         <div id="view-plan" class="hidden space-y-4">
-            <section class="card p-7">
-                <h2 class="text-[10px] font-bold opacity-50 uppercase tracking-widest text-center mb-6">Weekly Schedule</h2>
-                <div id="weekly-board" class="space-y-2"></div>
+            <section class="card p-6 pt-8 pb-8">
+                <h2 class="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest text-center mb-6">Weekly Logic</h2>
+                <p class="text-[9px] text-center text-[var(--text-muted)] mb-4 italic">Tap to change daily routine</p>
+                <div id="weekly-board"></div>
             </section>
         </div>
 
@@ -117,21 +146,23 @@
 
     <script>
         const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        const types = ['Rest', 'Upper Body', 'Lower Body', 'Full Body', 'Core'];
-        let history = JSON.parse(localStorage.getItem('strive_history')) || [];
-        let profile = JSON.parse(localStorage.getItem('strive_profile')) || { weight: 170, height: 70, level: 'Beginner', darkMode: false, avatarColor: '#3B82F6', avatarIcon: 'fa-user-ninja' };
-        let schedule = JSON.parse(localStorage.getItem('strive_schedule')) || { 'Monday': 'Upper Body', 'Tuesday': 'Rest', 'Wednesday': 'Lower Body', 'Thursday': 'Rest', 'Friday': 'Full Body', 'Saturday': 'Core', 'Sunday': 'Rest' };
+        const types = ['REST', 'UPPER BODY', 'LOWER BODY', 'FULL BODY', 'CORE'];
+        
+        // Using v7 keys to force fresh data load
+        let history = JSON.parse(localStorage.getItem('strive_history_v7')) || [];
+        let profile = JSON.parse(localStorage.getItem('strive_profile_v7')) || { level: 'Beginner', darkMode: false, alertTime: '08:00' };
+        let schedule = JSON.parse(localStorage.getItem('strive_schedule_v7')) || { 'Monday': 'CORE', 'Tuesday': 'LOWER BODY', 'Wednesday': 'UPPER BODY', 'Thursday': 'REST', 'Friday': 'FULL BODY', 'Saturday': 'CORE', 'Sunday': 'REST' };
 
         const exercises = {
-            Beginner: { upper: [{n:'Wall Pushups', s:'Arms on wall, slow reps.'}], lower: [{n:'Chair Squats', s:'Sit and stand from chair.'}], full: [{n:'Step Jacks', s:'Step side to side with arm swings.'}], core: [{n:'Seated Twists', s:'Rotate torso while sitting.'}] },
-            Pro: { upper: [{n:'Standard Pushups', s:'Core tight, chest to floor.'}], lower: [{n:'Body Squats', s:'Hips back, thighs parallel.'}], full: [{n:'Mountain Climbers', s:'Plank position, knees to chest.'}], core: [{n:'Plank', s:'Hold straight body line.'}] },
-            Advanced: { upper: [{n:'Diamond Pushups', s:'Hands touch, lower chest.'}], lower: [{n:'Jump Squats', s:'Explosive power jump.'}], full: [{n:'Burpees', s:'Full deck burpee movement.'}], core: [{n:'Hanging Leg Raises', s:'Lift legs to bar.'}] }
+            Beginner: { 'UPPER BODY': [{n:'Wall Pushups', d:'Place hands flat on wall. Bend elbows to lower chest, then push back up.'}, {n:'Arm Circles', d:'Hold arms straight out. Make small forward circles for 30s.'}], 'LOWER BODY': [{n:'Chair Squats', d:'Stand in front of chair. Lower hips until they touch, then stand.'}], 'FULL BODY': [{n:'Step Jacks', d:'Step one foot out and raise arms, alternate sides. Low impact.'}], 'CORE': [{n:'Plank Holds', d:'Rest on forearms and toes. Keep body in a straight line.'}], 'REST': [] },
+            Pro: { 'UPPER BODY': [{n:'Pushups'}, {n:'Dips'}], 'LOWER BODY': [{n:'Lunges'}, {n:'Squats'}], 'FULL BODY': [{n:'Burpees'}], 'CORE': [{n:'Russian Twists'}], 'REST': [] },
+            Advanced: { 'UPPER BODY': [{n:'Diamond Pushups'}, {n:'Pullups'}], 'LOWER BODY': [{n:'Jump Squats'}, {n:'Pistol Squats'}], 'FULL BODY': [{n:'Navy Seals'}], 'CORE': [{n:'Dragon Flags'}], 'REST': [] }
         };
 
         const badgeData = {
-            Beginner: [ {id: 'early', n: 'Early Riser', desc: '4AM-7AM Session', icon: 'fa-sun'}, {id: 'streak', n: 'Fresh Start', desc: 'Log 1 Session', icon: 'fa-seedling'} ],
-            Pro: [ {id: 'night', n: 'Night Owl', desc: '10PM-4AM Session', icon: 'fa-moon'}, {id: 'streak', n: 'Streak Master', desc: '3 Day Streak', icon: 'fa-fire'} ],
-            Advanced: [ {id: 'warrior', n: 'Weekend Warrior', desc: 'Sat+Sun Grind', icon: 'fa-shield-alt'}, {id: 'elite', n: 'The 1%', desc: '10 Sessions Logged', icon: 'fa-crown'} ]
+            Beginner: [ {id: 'early', n: 'Early Riser', d: '4AM-7AM Workout', i: 'fa-sun'}, {id: 'streak', n: 'Streak Master', d: 'Log 2 Workouts', i: 'fa-fire'} ],
+            Pro: [ {id: 'night', n: 'Night Owl', d: '10PM-4AM Workout', i: 'fa-moon'}, {id: 'warrior', n: 'Weekend Warrior', d: 'Sat/Sun Grind', i: 'fa-shield-alt'} ],
+            Advanced: [ {id: 'elite', n: 'The 1%', d: 'Advanced Volume', i: 'fa-crown'}, {id: 'iron', n: 'Iron Will', d: 'No Missed Days', i: 'fa-dumbbell'} ]
         };
 
         window.onload = function() { 
@@ -142,98 +173,98 @@
         function switchTab(tab) {
             ['daily', 'plan', 'goals'].forEach(t => document.getElementById('view-' + t).classList.add('hidden'));
             document.getElementById('view-' + tab).classList.remove('hidden');
-            ['tab-daily', 'tab-plan', 'tab-goals'].forEach(b => document.getElementById(b).className = "flex-1 py-3 text-[10px] font-bold uppercase text-slate-400");
-            document.getElementById('tab-' + tab).className = "flex-1 py-3 text-[10px] font-bold uppercase active-tab";
+            ['tab-daily', 'tab-plan', 'tab-goals'].forEach(b => document.getElementById(b).classList.remove('active-tab'));
+            document.getElementById('tab-' + tab).classList.add('active-tab');
             document.getElementById('settings-panel').classList.add('hidden');
         }
 
         function toggleSettings() {
             document.getElementById('settings-panel').classList.toggle('hidden');
-            document.getElementById('view-goals').classList.toggle('hidden');
+            if(!document.getElementById('settings-panel').classList.contains('hidden')) {
+                document.getElementById('view-plan').classList.add('hidden');
+                document.getElementById('view-daily').classList.add('hidden');
+                document.getElementById('view-goals').classList.add('hidden');
+            } else {
+                switchTab('goals');
+            }
         }
 
         function toggleDarkMode() {
             profile.darkMode = !profile.darkMode;
             document.body.classList.toggle('dark');
-            localStorage.setItem('strive_profile', JSON.stringify(profile));
-        }
-
-        function changeAvatar(color, icon) {
-            profile.avatarColor = color; profile.avatarIcon = icon;
-            document.getElementById('main-avatar').style.backgroundColor = color;
-            document.getElementById('avatar-icon').className = `fas ${icon} text-3xl text-white`;
-            localStorage.setItem('strive_profile', JSON.stringify(profile));
-        }
-
-        function updateBadges() {
-            const grid = document.getElementById('badge-grid');
-            const levelBadges = badgeData[profile.level];
-            grid.innerHTML = levelBadges.map(b => `
-                <div class="badge-box p-4 text-center ${isBadgeUnlocked(b.id) ? 'badge-active' : ''}">
-                    <i class="fas ${b.icon} text-xl mb-2 text-blue-500"></i>
-                    <p class="text-[9px] font-bold uppercase">${b.n}</p>
-                    <p class="text-[7px] opacity-50">${b.desc}</p>
-                </div>`).join('');
-        }
-
-        function isBadgeUnlocked(id) {
-            if(id === 'streak' && history.length >= 1) return true;
-            if(id === 'elite' && history.length >= 10) return true;
-            return false; // Time-based badges would check session timestamps
-        }
-
-        function generateIntelligentWorkout() {
-            document.getElementById('workout-menu').classList.add('hidden');
-            document.getElementById('active-workout').classList.remove('hidden');
-            const mode = schedule[days[(new Date().getDay() + 6) % 7]].split(' ')[0].toLowerCase();
-            const list = exercises[profile.level][mode] || exercises[profile.level]['upper'];
-            let sets = profile.level === 'Advanced' ? 5 : (profile.level === 'Pro' ? 4 : 3);
-            document.getElementById('exercise-list').innerHTML = list.map(ex => `
-                <div class="p-5 bg-white/5 border border-black/5 rounded-2xl">
-                    <div class="flex justify-between items-center"><span class="font-bold uppercase text-[10px]">${ex.n}</span><span class="text-[9px] font-bold text-blue-500">${sets} Sets</span></div>
-                    ${profile.level === 'Beginner' ? `<div class="tutorial-box"><i class="fas fa-info-circle mr-1"></i> ${ex.s}</div>` : ''}
-                </div>`).join('');
+            localStorage.setItem('strive_profile_v7', JSON.stringify(profile));
         }
 
         function renderWeeklyBoard() {
             const today = days[(new Date().getDay() + 6) % 7];
             document.getElementById('weekly-board').innerHTML = days.map(day => `
-                <div onclick="toggleDay('${day}')" class="flex justify-between p-5 bg-white/5 border border-black/5 rounded-2xl ${day === today ? 'border-blue-500 bg-blue-50/50' : ''}">
-                    <span class="text-[10px] font-bold uppercase ${day === today ? 'text-blue-600' : 'opacity-40'}">${day}</span>
-                    <span class="text-[10px] font-bold uppercase italic">${schedule[day]}</span>
+                <div onclick="toggleDay('${day}')" class="day-row ${day === today ? 'day-active' : ''}">
+                    <span class="text-xs uppercase">${day}</span>
+                    <span class="text-[10px] uppercase ${day !== today ? 'opacity-50' : ''}">${schedule[day]}</span>
                 </div>`).join('');
         }
 
         function toggleDay(day) {
             schedule[day] = types[(types.indexOf(schedule[day]) + 1) % types.length];
-            localStorage.setItem('strive_schedule', JSON.stringify(schedule));
+            localStorage.setItem('strive_schedule_v7', JSON.stringify(schedule));
             renderWeeklyBoard();
         }
 
-        function updateUI() {
-            const bmi = (703 * (profile.weight / (profile.height * profile.height))).toFixed(1);
-            document.getElementById('stat-bmi').innerText = isNaN(bmi) ? "--" : bmi;
-            document.getElementById('stat-workouts').innerText = history.length;
-            document.getElementById('v-level').value = profile.level;
-            document.getElementById('level-indicator').innerText = profile.level + ' Protocol';
-            const progress = Math.min((history.length % 5) * 20, 100);
-            document.getElementById('progress-fill').style.width = progress + '%';
-            document.getElementById('progress-text').innerText = progress + '%';
-            changeAvatar(profile.avatarColor, profile.avatarIcon);
+        function updateBadges() {
+            const grid = document.getElementById('badge-grid');
+            grid.innerHTML = badgeData[profile.level].map((b, i) => `
+                <div class="badge-box ${history.length > i ? 'badge-unlocked' : ''}">
+                    <i class="fas ${b.i} text-2xl mb-3 ${history.length > i ? 'text-blue-500' : 'text-[var(--text-muted)]'}"></i>
+                    <p class="text-[10px] font-black uppercase tracking-wide text-[var(--text-main)]">${b.n}</p>
+                    <p class="text-[8px] font-bold uppercase text-[var(--text-muted)] mt-1">${b.d}</p>
+                </div>`).join('');
+        }
+
+        function startWorkout() {
+            document.getElementById('workout-menu').classList.add('hidden');
+            document.getElementById('active-workout').classList.remove('hidden');
+            const todayMode = schedule[days[(new Date().getDay() + 6) % 7]];
+            if(todayMode === 'REST') {
+                document.getElementById('exercise-list').innerHTML = '<p class="text-center text-xs font-bold text-[var(--text-muted)] py-8">Recovery Day. Rest up!</p>';
+                return;
+            }
+            const list = exercises[profile.level][todayMode];
+            let sets = profile.level === 'Advanced' ? 5 : (profile.level === 'Pro' ? 4 : 3);
+            
+            document.getElementById('exercise-list').innerHTML = list.map(ex => `
+                <div class="p-5 bg-[var(--element-bg)] border border-[var(--border-color)] rounded-2xl">
+                    <div class="flex justify-between items-center">
+                        <span class="font-black uppercase text-xs">${ex.n}</span>
+                        <span class="text-[10px] font-bold text-white bg-blue-500 px-3 py-1 rounded-full">${sets} Sets</span>
+                    </div>
+                    ${profile.level === 'Beginner' ? `<div class="tutorial-box"><i class="fas fa-video mr-1"></i> <strong>How to:</strong> ${ex.d}</div>` : ''}
+                </div>`).join('');
         }
 
         function updateProfile() {
             profile.level = document.getElementById('v-level').value;
-            localStorage.setItem('strive_profile', JSON.stringify(profile));
+            profile.alertTime = document.getElementById('v-alert').value || profile.alertTime;
+            localStorage.setItem('strive_profile_v7', JSON.stringify(profile));
             updateUI(); updateBadges();
+        }
+
+        function updateUI() {
+            document.getElementById('stat-workouts').innerText = history.length;
+            document.getElementById('stat-level').innerText = profile.level;
+            document.getElementById('v-level').value = profile.level;
+            document.getElementById('v-alert').value = profile.alertTime;
+            document.getElementById('level-indicator').innerText = profile.level + ' Program';
+            const progress = Math.min((history.length % 5) * 20, 100);
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('progress-text').innerText = progress + '%';
         }
 
         function initGoalChart() {
             const ctx = document.getElementById('goalPieChart').getContext('2d');
-            new Chart(ctx, { type: 'doughnut', data: { labels: ['Chest', 'Back', 'Legs', 'Abs', 'Arms'], datasets: [{ data: [20, 20, 20, 20, 20], backgroundColor: ['#60A5FA', '#3B82F6', '#2563EB', '#1D4ED8', '#DBEAFE'], borderWidth: 0, cutout: '80%' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 9, weight: 'bold' }, color: '#94A3B8', padding: 15 } } } } });
+            new Chart(ctx, { type: 'doughnut', data: { labels: ['Chest', 'Back', 'Legs', 'Abs'], datasets: [{ data: [25, 25, 25, 25], backgroundColor: ['#3B82F6', '#60A5FA', '#93C5FD', '#1E3A8A'], borderWidth: 0, cutout: '80%' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
         }
 
-        function logSession() { history.push({ date: new Date().toLocaleDateString(), time: new Date().getHours() }); localStorage.setItem('strive_history', JSON.stringify(history)); location.reload(); }
+        function logSession() { history.push({ date: new Date().toLocaleDateString() }); localStorage.setItem('strive_history_v7', JSON.stringify(history)); location.reload(); }
     </script>
 </body>
 </html>
