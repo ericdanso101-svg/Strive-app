@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Strive | Smart Dashboard</title>
+    <title>Strive | V4 Smart Trainer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
@@ -11,25 +11,25 @@
         :root { --bg: #FFFFFF; --text: #1E293B; --card: #F8FAFC; --border: #F1F5F9; }
         .dark { --bg: #0F172A; --text: #F8FAFC; --card: #1E293B; --border: #334155; }
         
-        body { background-color: var(--bg); color: var(--text); font-family: 'Quicksand', sans-serif; transition: all 0.3s ease; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Quicksand', sans-serif; transition: all 0.3s ease; overflow-x: hidden; }
         .hero-bg { background: linear-gradient(rgba(59, 130, 246, 0.8), rgba(30, 64, 175, 0.9)), url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80'); background-size: cover; background-position: center; }
-        .card { background: var(--card); border-radius: 28px; border: 1px solid var(--border); }
+        .card { background: var(--card); border-radius: 28px; border: 1px solid var(--border); transition: transform 0.2s; }
         .active-tab { background: #3B82F6; color: white !important; border-radius: 14px; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2); }
         .tutorial-box { background: rgba(59, 130, 246, 0.1); border: 1px dashed #3B82F6; border-radius: 16px; padding: 12px; margin-top: 8px; font-size: 10px; color: #3B82F6; }
         .avatar-circle { width: 75px; height: 75px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; margin: 0 auto; transition: all 0.3s; }
-        .color-dot { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid white; }
+        .color-dot { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body class="pb-20">
 
     <header class="hero-bg text-white p-6 pb-10 text-center rounded-b-[3rem] shadow-xl mb-4">
         <div class="flex justify-between items-center mb-4">
-            <i class="fas fa-bell text-white/70" onclick="alert('Daily nudge set for your preferred time!')"></i>
-            <h1 class="text-xl font-bold italic tracking-tight">Strive V4</h1>
-            <i class="fas fa-cog text-white/70" onclick="toggleSettings()"></i>
+            <i class="fas fa-bell text-white/70 text-lg" onclick="alert('Daily nudge active!')"></i>
+            <h1 class="text-xl font-bold italic tracking-tight">Strive Pro</h1>
+            <i class="fas fa-cog text-white/70 text-lg" onclick="toggleSettings()"></i>
         </div>
         <div class="avatar-circle mb-3 shadow-lg" id="main-avatar">
-            <i class="fas fa-user-ninja text-3xl" id="avatar-icon"></i>
+            <i class="fas fa-user-ninja text-3xl text-white" id="avatar-icon"></i>
         </div>
         <div class="max-w-[160px] mx-auto bg-white/10 p-3 rounded-2xl backdrop-blur-sm border border-white/10">
             <div class="flex justify-between text-[8px] font-bold uppercase mb-1">
@@ -50,20 +50,22 @@
             <button onclick="switchTab('plan')" id="tab-plan" class="flex-1 py-2.5 text-[10px] font-bold uppercase text-slate-400">Plan</button>
         </nav>
 
-        <div id="settings-panel" class="hidden space-y-4 animate-fade-in">
-            <section class="card p-6 shadow-xl">
+        <div id="settings-panel" class="hidden space-y-4">
+            <section class="card p-6 shadow-2xl border-blue-500/20">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xs font-bold uppercase tracking-widest text-blue-500">App Customization</h2>
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-blue-500">Settings & Appearance</h2>
                     <i class="fas fa-times text-slate-400" onclick="toggleSettings()"></i>
                 </div>
                 
-                <div class="flex justify-between items-center mb-6 p-4 bg-white/5 rounded-2xl border border-slate-200/20">
-                    <span class="text-[10px] font-bold uppercase">Appearance</span>
-                    <button onclick="toggleDarkMode()" class="text-[10px] bg-blue-600 text-white px-4 py-2 rounded-xl font-bold uppercase">Toggle Dark/Light</button>
+                <div class="flex justify-between items-center mb-6 p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl">
+                    <span class="text-[10px] font-bold uppercase">Dark Mode</span>
+                    <button onclick="toggleDarkMode()" class="w-12 h-6 bg-slate-300 dark:bg-blue-600 rounded-full relative transition-colors">
+                        <div class="absolute top-1 left-1 dark:left-7 w-4 h-4 bg-white rounded-full transition-all"></div>
+                    </button>
                 </div>
 
                 <div class="text-center mb-6">
-                    <p class="text-[9px] font-bold uppercase text-slate-400 mb-3 tracking-widest">Select Persona</p>
+                    <p class="text-[9px] font-bold uppercase text-slate-400 mb-3 tracking-widest">Customize Persona</p>
                     <div class="flex justify-center gap-3 mb-4">
                         <div class="color-dot bg-blue-500" onclick="changeAvatar('#3B82F6', 'fa-user-ninja')"></div>
                         <div class="color-dot bg-orange-500" onclick="changeAvatar('#F97316', 'fa-user-astronaut')"></div>
@@ -72,13 +74,13 @@
                     </div>
                 </div>
 
-                <div class="space-y-4 pt-4 border-t border-slate-200/20">
-                    <select id="v-level" class="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 p-4 rounded-2xl text-[11px] font-bold uppercase text-blue-600" onchange="updateProfile()">
+                <div class="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                    <select id="v-level" class="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 p-4 rounded-2xl text-[11px] font-bold uppercase text-blue-600 appearance-none text-center" onchange="updateProfile()">
                         <option value="Beginner">Beginner Level</option>
                         <option value="Pro">Pro Level</option>
                         <option value="Advanced">Advanced Level</option>
                     </select>
-                    <button onclick="toggleSettings()" class="w-full bg-slate-200 dark:bg-slate-700 p-4 rounded-2xl text-[10px] font-bold uppercase">Close & Save</button>
+                    <button onclick="toggleSettings()" class="w-full bg-blue-600 text-white p-4 rounded-2xl text-[10px] font-bold uppercase shadow-lg">Save & Return</button>
                 </div>
             </section>
         </div>
@@ -87,15 +89,15 @@
             <section class="card p-6 text-center">
                 <div class="grid grid-cols-2 gap-4">
                     <div><div class="text-2xl font-bold" id="stat-workouts">0</div><div class="text-[9px] font-bold text-slate-400 uppercase">Sessions</div></div>
-                    <div class="border-l border-slate-200 pl-4"><div class="text-2xl font-bold text-blue-500" id="stat-bmi">--</div><div class="text-[9px] font-bold text-slate-400 uppercase">BMI</div></div>
+                    <div class="border-l border-slate-200 dark:border-slate-700 pl-4"><div class="text-2xl font-bold text-blue-500" id="stat-bmi">--</div><div class="text-[9px] font-bold text-slate-400 uppercase">BMI</div></div>
                 </div>
             </section>
         </div>
 
         <div id="view-daily" class="hidden space-y-4">
             <section class="card p-6 border-t-4 border-blue-500">
-                <h2 id="rec-text" class="text-sm font-bold mb-1">Tailored Protocol</h2>
-                <p class="text-[9px] text-slate-400 font-bold uppercase mb-4 italic">Instructional mode active for Beginners</p>
+                <h2 id="rec-text" class="text-sm font-bold mb-1">Coach Logic</h2>
+                <p class="text-[9px] text-slate-400 font-bold uppercase mb-4 italic">Tailored moves active</p>
                 <div id="workout-menu"><button onclick="generateIntelligentWorkout()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl uppercase text-xs shadow-lg">Begin Session</button></div>
                 <div id="active-workout" class="hidden space-y-3"><div id="exercise-list" class="space-y-3"></div><button onclick="logSession()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl uppercase text-xs">Finish Workout</button></div>
             </section>
@@ -115,14 +117,14 @@
 
         const exerciseData = {
             upper: {
-                Beginner: [{name: 'Wall Pushups', steps: 'Hands against wall, lower chest slowly, push back.'}, {name: 'Arm Circles', steps: 'Extend arms, rotate in small circles for 30s.'}],
-                Pro: [{name: 'Pushups', steps: 'Lower chest to floor, keep core tight.'}, {name: 'Plank Shoulder Taps', steps: 'In plank, tap opposite shoulder with hand.'}],
-                Advanced: [{name: 'Diamond Pushups', steps: 'Hands in diamond shape, lower chest to hands.'}, {name: 'Handstand Pushups', steps: 'Advanced inversion work against wall.'}]
+                Beginner: [{name: 'Wall Pushups', steps: 'Hands against wall, lower chest, push back.'}, {name: 'Arm Circles', steps: 'Extend arms, rotate in small circles.'}],
+                Pro: [{name: 'Pushups', steps: 'Core tight, lower chest to floor.'}, {name: 'Plank Shoulder Taps', steps: 'In plank, tap opposite shoulder.'}],
+                Advanced: [{name: 'Diamond Pushups', steps: 'Hands in diamond shape, lower chest to hands.'}, {name: 'Pullups', steps: 'Pull chin above bar.'}]
             },
             lower: {
-                Beginner: [{name: 'Chair Squats', steps: 'Lower hips until you touch a chair, then stand.'}, {name: 'Step-ups', steps: 'Step onto a sturdy box or stair, then back down.'}],
-                Pro: [{name: 'Standard Squats', steps: 'Hips back, thighs parallel to floor.'}, {name: 'Walking Lunges', steps: 'Step forward and drop back knee.'}],
-                Advanced: [{name: 'Jump Squats', steps: 'Explosive squat, landing softly.'}, {name: 'Single Leg Squats', steps: 'Keep one leg out, lower with one leg.'}]
+                Beginner: [{name: 'Chair Squats', steps: 'Lower hips until you touch a chair.'}, {name: 'Step-ups', steps: 'Step onto a sturdy box or stair.'}],
+                Pro: [{name: 'Bodyweight Squats', steps: 'Hips back, thighs parallel to floor.'}, {name: 'Walking Lunges', steps: 'Step forward and drop back knee.'}],
+                Advanced: [{name: 'Jump Squats', steps: 'Explosive jump, landing softly.'}, {name: 'Pistol Squats', steps: 'One leg squat, keep other leg straight.'}]
             }
         };
 
@@ -172,13 +174,11 @@
             const today = days[(new Date().getDay() + 6) % 7];
             const mode = schedule[today].split(' ')[0].toLowerCase();
             const level = profile.level;
-            
-            let baseSets = level === 'Advanced' ? 5 : (level === 'Pro' ? 4 : 3);
+            let sets = level === 'Advanced' ? 5 : (level === 'Pro' ? 4 : 3);
             const list = exerciseData[mode] ? exerciseData[mode][level] : exerciseData['upper'][level];
-            
             document.getElementById('exercise-list').innerHTML = list.map(ex => `
                 <div class="p-4 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-2xl">
-                    <div class="flex justify-between items-center"><span class="font-bold uppercase text-[10px]">${ex.name}</span><span class="text-[9px] font-bold text-blue-600">${baseSets} Sets</span></div>
+                    <div class="flex justify-between items-center"><span class="font-bold uppercase text-[10px]">${ex.name}</span><span class="text-[9px] font-bold text-blue-600">${sets} Sets</span></div>
                     ${level === 'Beginner' ? `<div class="tutorial-box"><i class="fas fa-info-circle"></i> ${ex.steps}</div>` : ''}
                 </div>`).join('');
         }
@@ -201,8 +201,7 @@
 
         function setDailyRecommendation() {
             const today = days[(new Date().getDay() + 6) % 7];
-            const plan = schedule[today];
-            document.getElementById('rec-text').innerText = plan === 'Rest' ? "Rest Mode" : plan;
+            document.getElementById('rec-text').innerText = schedule[today];
         }
 
         function updateProfile() {
