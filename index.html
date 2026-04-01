@@ -3,50 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Strive V7 | Strict Contrast</title>
+    <title>Strive V8 | Progressive Coach</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
-        /* 100% STRICT LIGHT MODE */
+        /* STRICT LIGHT/DARK MODES */
         :root { 
-            --bg-main: #F4F7F9; 
-            --card-bg: #FFFFFF; 
-            --text-main: #0F172A; 
-            --text-muted: #64748B;
-            --border-color: #E2E8F0;
-            --element-bg: #F8FAFC;
+            --bg-main: #F4F7F9; --card-bg: #FFFFFF; --text-main: #0F172A; --text-muted: #64748B;
+            --border-color: #E2E8F0; --element-bg: #F8FAFC; --input-bg: #F1F5F9;
         }
-        /* 100% STRICT DARK MODE */
         .dark { 
-            --bg-main: #0B1120; 
-            --card-bg: #1E293B; 
-            --text-main: #F8FAFC; 
-            --text-muted: #94A3B8;
-            --border-color: #334155;
-            --element-bg: #0F172A;
+            --bg-main: #0B1120; --card-bg: #1E293B; --text-main: #F8FAFC; --text-muted: #94A3B8;
+            --border-color: #334155; --element-bg: #0F172A; --input-bg: #1E293B;
         }
         
-        body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Quicksand', sans-serif; transition: background-color 0.3s, color 0.3s; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Quicksand', sans-serif; transition: all 0.3s; -webkit-tap-highlight-color: transparent; }
         .hero-bg { background: linear-gradient(135deg, #3B82F6, #1D4ED8); }
-        .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 2rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); transition: background-color 0.3s, border-color 0.3s; }
+        .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 2rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); }
         
-        /* NAVIGATION */
         .nav-container { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 1.5rem; padding: 0.5rem; }
         .nav-btn { color: var(--text-muted); font-weight: 700; border-radius: 1rem; transition: all 0.2s; }
         .active-tab { background-color: #3B82F6; color: #FFFFFF !important; }
         
-        /* PLAN TAB - CLEAN & CONSISTENT */
-        .day-row { background-color: var(--element-bg); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 1.25rem; padding: 1.25rem 1.5rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; font-weight: 900; cursor: pointer; transition: all 0.2s; }
+        .day-row { background-color: var(--element-bg); border: 1px solid var(--border-color); border-radius: 1.25rem; padding: 1.25rem 1.5rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; font-weight: 900; cursor: pointer; }
         .day-active { border-color: #3B82F6; background-color: rgba(59, 130, 246, 0.1); color: #3B82F6; }
         
-        /* BADGES */
-        .badge-box { background-color: var(--element-bg); border: 1px solid var(--border-color); border-radius: 1.5rem; padding: 1rem; text-align: center; opacity: 0.5; filter: grayscale(1); transition: all 0.3s; }
+        .badge-box { background-color: var(--element-bg); border: 1px solid var(--border-color); border-radius: 1.5rem; padding: 1rem; text-align: center; opacity: 0.5; filter: grayscale(1); }
         .badge-unlocked { opacity: 1; filter: grayscale(0); border-color: #3B82F6; background-color: rgba(59, 130, 246, 0.05); }
         
-        /* TUTORIALS */
         .tutorial-box { background-color: rgba(59, 130, 246, 0.1); border-left: 4px solid #3B82F6; padding: 12px; margin-top: 10px; font-size: 11px; border-radius: 0 8px 8px 0; color: var(--text-main); }
+        .weight-input { width: 70px; text-align: center; font-weight: 900; color: #3B82F6; background-color: var(--input-bg); border: 1px solid var(--border-color); border-radius: 0.75rem; padding: 0.5rem; outline: none; }
     </style>
 </head>
 <body class="pb-20">
@@ -57,7 +45,7 @@
             <i class="fas fa-cog text-xl opacity-80 cursor-pointer" onclick="toggleSettings()"></i>
         </div>
         
-        <h1 class="text-2xl font-black tracking-tight mt-4 mb-2 text-center">Strive V7</h1>
+        <h1 class="text-2xl font-black tracking-tight mt-4 mb-2 text-center">Strive V8</h1>
         
         <div class="max-w-[240px] mx-auto bg-white/20 p-4 rounded-2xl backdrop-blur-sm border border-white/20 mt-6">
             <div class="flex justify-between text-[10px] font-bold uppercase mb-2 tracking-widest">
@@ -80,23 +68,38 @@
         <div id="settings-panel" class="hidden space-y-4">
             <section class="card p-7">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xs font-bold uppercase tracking-widest text-blue-500">System Preferences</h2>
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-blue-500">Coach Profile & Settings</h2>
                     <i class="fas fa-times text-[var(--text-muted)] text-lg cursor-pointer" onclick="toggleSettings()"></i>
                 </div>
                 
                 <div class="space-y-4">
+                    <div class="flex gap-3">
+                        <div class="flex-1 p-4 bg-[var(--element-bg)] border border-[var(--border-color)] rounded-2xl">
+                            <label class="text-[9px] font-bold uppercase text-[var(--text-muted)] block mb-2">Weight (LBS)</label>
+                            <input type="number" id="v-weight" class="w-full bg-transparent font-black text-blue-500 outline-none" onchange="updateProfile()">
+                        </div>
+                        <div class="flex-1 p-4 bg-[var(--element-bg)] border border-[var(--border-color)] rounded-2xl">
+                            <label class="text-[9px] font-bold uppercase text-[var(--text-muted)] block mb-2">Height (IN)</label>
+                            <input type="number" id="v-height" class="w-full bg-transparent font-black text-blue-500 outline-none" onchange="updateProfile()">
+                        </div>
+                    </div>
+
                     <div class="p-4 bg-[var(--element-bg)] border border-[var(--border-color)] rounded-2xl">
-                        <label class="text-[10px] font-bold uppercase text-[var(--text-muted)] block mb-2">Fitness Level</label>
-                        <select id="v-level" class="w-full bg-transparent font-bold text-blue-500 outline-none" onchange="updateProfile()">
+                        <label class="text-[9px] font-bold uppercase text-[var(--text-muted)] block mb-2">Primary Goal</label>
+                        <select id="v-goal" class="w-full bg-transparent font-black text-blue-500 outline-none" onchange="updateProfile()">
+                            <option value="Build Muscle">Build Muscle (Progressive Overload)</option>
+                            <option value="Fat Loss">Fat Loss (Higher Reps)</option>
+                            <option value="Maintenance">Maintenance</option>
+                        </select>
+                    </div>
+
+                    <div class="p-4 bg-[var(--element-bg)] border border-[var(--border-color)] rounded-2xl">
+                        <label class="text-[9px] font-bold uppercase text-[var(--text-muted)] block mb-2">Fitness Level</label>
+                        <select id="v-level" class="w-full bg-transparent font-black text-blue-500 outline-none" onchange="updateProfile()">
                             <option value="Beginner">Beginner (Tutorials On)</option>
                             <option value="Pro">Pro</option>
                             <option value="Advanced">Advanced</option>
                         </select>
-                    </div>
-                    
-                    <div class="p-4 bg-[var(--element-bg)] border border-[var(--border-color)] rounded-2xl">
-                        <label class="text-[10px] font-bold uppercase text-[var(--text-muted)] block mb-2">Notification Time</label>
-                        <input type="time" id="v-alert" class="w-full bg-transparent font-bold text-blue-500 outline-none" onchange="updateProfile()">
                     </div>
 
                     <button onclick="toggleSettings()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl uppercase text-xs">Save Settings</button>
@@ -109,12 +112,12 @@
                 <div class="h-40 mb-6"><canvas id="goalPieChart"></canvas></div>
                 <div class="grid grid-cols-2 gap-4 pt-4 border-t border-[var(--border-color)]">
                     <div><div class="text-2xl font-black" id="stat-workouts">0</div><div class="text-[9px] font-bold text-[var(--text-muted)] uppercase">Sessions</div></div>
-                    <div class="border-l border-[var(--border-color)]"><div class="text-2xl font-black text-blue-500" id="stat-level">--</div><div class="text-[9px] font-bold text-[var(--text-muted)] uppercase">Level</div></div>
+                    <div class="border-l border-[var(--border-color)]"><div class="text-2xl font-black text-blue-500" id="stat-bmi">--</div><div class="text-[9px] font-bold text-[var(--text-muted)] uppercase">Current BMI</div></div>
                 </div>
             </section>
 
             <section class="card p-7">
-                <h2 class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest text-center mb-6">Your Milestones</h2>
+                <h2 class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest text-center mb-6">Milestones</h2>
                 <div class="grid grid-cols-2 gap-4" id="badge-grid"></div>
             </section>
         </div>
@@ -126,11 +129,15 @@
                         <h2 class="text-sm font-black mb-1">Today's Protocol</h2>
                         <p id="level-indicator" class="text-[10px] text-[var(--text-muted)] font-bold uppercase"></p>
                     </div>
-                    <div class="w-12 h-12 rounded-full bg-[var(--element-bg)] text-blue-500 border border-[var(--border-color)] flex items-center justify-center text-xl"><i class="fas fa-play"></i></div>
+                    <div class="w-12 h-12 rounded-full bg-[var(--element-bg)] text-blue-500 border border-[var(--border-color)] flex items-center justify-center text-xl"><i class="fas fa-dumbbell"></i></div>
                 </div>
                 
                 <div id="workout-menu"><button onclick="startWorkout()" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl uppercase text-xs shadow-lg">Start Session</button></div>
-                <div id="active-workout" class="hidden space-y-4"><div id="exercise-list" class="space-y-3"></div><button onclick="logSession()" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl uppercase text-xs">Finish & Log</button></div>
+                <div id="active-workout" class="hidden space-y-4">
+                    <p class="text-[10px] font-bold text-center text-[var(--text-muted)] uppercase tracking-widest bg-[var(--element-bg)] p-2 rounded-xl">Enter your weight to track progress</p>
+                    <div id="exercise-list" class="space-y-3"></div>
+                    <button onclick="logSession()" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl uppercase text-xs mt-4">Finish & Save Progress</button>
+                </div>
             </section>
         </div>
 
@@ -148,15 +155,17 @@
         const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         const types = ['REST', 'UPPER BODY', 'LOWER BODY', 'FULL BODY', 'CORE'];
         
-        // Using v7 keys to force fresh data load
-        let history = JSON.parse(localStorage.getItem('strive_history_v7')) || [];
-        let profile = JSON.parse(localStorage.getItem('strive_profile_v7')) || { level: 'Beginner', darkMode: false, alertTime: '08:00' };
-        let schedule = JSON.parse(localStorage.getItem('strive_schedule_v7')) || { 'Monday': 'CORE', 'Tuesday': 'LOWER BODY', 'Wednesday': 'UPPER BODY', 'Thursday': 'REST', 'Friday': 'FULL BODY', 'Saturday': 'CORE', 'Sunday': 'REST' };
+        // V8 Data Structures
+        let history = JSON.parse(localStorage.getItem('strive_history_v8')) || [];
+        let profile = JSON.parse(localStorage.getItem('strive_profile_v8')) || { weight: 170, height: 70, level: 'Beginner', goal: 'Build Muscle', darkMode: false };
+        let schedule = JSON.parse(localStorage.getItem('strive_schedule_v8')) || { 'Monday': 'CORE', 'Tuesday': 'LOWER BODY', 'Wednesday': 'UPPER BODY', 'Thursday': 'REST', 'Friday': 'FULL BODY', 'Saturday': 'CORE', 'Sunday': 'REST' };
+        let personalRecords = JSON.parse(localStorage.getItem('strive_prs_v8')) || {}; // Stores last weights
 
+        // Structured Routines
         const exercises = {
-            Beginner: { 'UPPER BODY': [{n:'Wall Pushups', d:'Place hands flat on wall. Bend elbows to lower chest, then push back up.'}, {n:'Arm Circles', d:'Hold arms straight out. Make small forward circles for 30s.'}], 'LOWER BODY': [{n:'Chair Squats', d:'Stand in front of chair. Lower hips until they touch, then stand.'}], 'FULL BODY': [{n:'Step Jacks', d:'Step one foot out and raise arms, alternate sides. Low impact.'}], 'CORE': [{n:'Plank Holds', d:'Rest on forearms and toes. Keep body in a straight line.'}], 'REST': [] },
-            Pro: { 'UPPER BODY': [{n:'Pushups'}, {n:'Dips'}], 'LOWER BODY': [{n:'Lunges'}, {n:'Squats'}], 'FULL BODY': [{n:'Burpees'}], 'CORE': [{n:'Russian Twists'}], 'REST': [] },
-            Advanced: { 'UPPER BODY': [{n:'Diamond Pushups'}, {n:'Pullups'}], 'LOWER BODY': [{n:'Jump Squats'}, {n:'Pistol Squats'}], 'FULL BODY': [{n:'Navy Seals'}], 'CORE': [{n:'Dragon Flags'}], 'REST': [] }
+            Beginner: { 'UPPER BODY': [{n:'Wall Pushups', d:'Place hands flat on wall. Bend elbows to lower chest, then push back up.'}, {n:'Dumbbell Rows', d:'Lean forward, pull dumbbell to hip.'}], 'LOWER BODY': [{n:'Chair Squats', d:'Lower hips to chair, stand.'}, {n:'Dumbbell RDLs', d:'Hinge at hips, keep back straight.'}], 'FULL BODY': [{n:'Dumbbell Thrusters', d:'Squat down, push weights overhead as you stand.'}], 'CORE': [{n:'Plank Holds', d:'Rest on forearms and toes.'}], 'REST': [] },
+            Pro: { 'UPPER BODY': [{n:'Bench Press'}, {n:'Barbell Rows'}], 'LOWER BODY': [{n:'Barbell Squats'}, {n:'Lunges'}], 'FULL BODY': [{n:'Clean and Press'}], 'CORE': [{n:'Weighted Crunches'}], 'REST': [] },
+            Advanced: { 'UPPER BODY': [{n:'Incline Bench Press'}, {n:'Weighted Pullups'}], 'LOWER BODY': [{n:'Front Squats'}, {n:'Bulgarian Split Squats'}], 'FULL BODY': [{n:'Snatches'}], 'CORE': [{n:'Dragon Flags'}], 'REST': [] }
         };
 
         const badgeData = {
@@ -184,15 +193,13 @@
                 document.getElementById('view-plan').classList.add('hidden');
                 document.getElementById('view-daily').classList.add('hidden');
                 document.getElementById('view-goals').classList.add('hidden');
-            } else {
-                switchTab('goals');
-            }
+            } else { switchTab('goals'); }
         }
 
         function toggleDarkMode() {
             profile.darkMode = !profile.darkMode;
             document.body.classList.toggle('dark');
-            localStorage.setItem('strive_profile_v7', JSON.stringify(profile));
+            localStorage.setItem('strive_profile_v8', JSON.stringify(profile));
         }
 
         function renderWeeklyBoard() {
@@ -206,7 +213,7 @@
 
         function toggleDay(day) {
             schedule[day] = types[(types.indexOf(schedule[day]) + 1) % types.length];
-            localStorage.setItem('strive_schedule_v7', JSON.stringify(schedule));
+            localStorage.setItem('strive_schedule_v8', JSON.stringify(schedule));
             renderWeeklyBoard();
         }
 
@@ -230,30 +237,60 @@
             }
             const list = exercises[profile.level][todayMode];
             let sets = profile.level === 'Advanced' ? 5 : (profile.level === 'Pro' ? 4 : 3);
+            let reps = profile.goal === 'Fat Loss' ? '12-15' : '8-10'; // Tailored reps based on goal
             
-            document.getElementById('exercise-list').innerHTML = list.map(ex => `
+            document.getElementById('exercise-list').innerHTML = list.map(ex => {
+                // PROGRESSIVE OVERLOAD LOGIC
+                let lastWeight = personalRecords[ex.n];
+                let suggestionText = "LBS";
+                let suggestedValue = "";
+                
+                if (lastWeight) {
+                    // Suggest a 5lb increase if goal is Build Muscle
+                    let nextTarget = profile.goal === 'Build Muscle' ? lastWeight + 5 : lastWeight;
+                    suggestionText = `Last: ${lastWeight}lb`;
+                    suggestedValue = nextTarget;
+                }
+
+                return `
                 <div class="p-5 bg-[var(--element-bg)] border border-[var(--border-color)] rounded-2xl">
-                    <div class="flex justify-between items-center">
-                        <span class="font-black uppercase text-xs">${ex.n}</span>
-                        <span class="text-[10px] font-bold text-white bg-blue-500 px-3 py-1 rounded-full">${sets} Sets</span>
+                    <div class="flex justify-between items-center mb-3">
+                        <div>
+                            <span class="font-black uppercase text-xs block">${ex.n}</span>
+                            <span class="text-[9px] font-bold text-blue-500 uppercase">${sets} Sets x ${reps}</span>
+                        </div>
+                        <div class="flex flex-col items-end">
+                            <input type="number" class="weight-input pr-tracker" data-name="${ex.n}" placeholder="LBS" value="${suggestedValue}">
+                            <span class="text-[8px] font-bold text-[var(--text-muted)] uppercase mt-1">${suggestionText}</span>
+                        </div>
                     </div>
                     ${profile.level === 'Beginner' ? `<div class="tutorial-box"><i class="fas fa-video mr-1"></i> <strong>How to:</strong> ${ex.d}</div>` : ''}
-                </div>`).join('');
+                </div>`;
+            }).join('');
         }
 
         function updateProfile() {
             profile.level = document.getElementById('v-level').value;
-            profile.alertTime = document.getElementById('v-alert').value || profile.alertTime;
-            localStorage.setItem('strive_profile_v7', JSON.stringify(profile));
+            profile.goal = document.getElementById('v-goal').value;
+            profile.weight = parseFloat(document.getElementById('v-weight').value) || profile.weight;
+            profile.height = parseFloat(document.getElementById('v-height').value) || profile.height;
+            localStorage.setItem('strive_profile_v8', JSON.stringify(profile));
             updateUI(); updateBadges();
         }
 
         function updateUI() {
+            // BMI CALCULATION: 703 * (weight / height^2)
+            const bmi = (703 * (profile.weight / (profile.height * profile.height))).toFixed(1);
+            document.getElementById('stat-bmi').innerText = isNaN(bmi) ? "--" : bmi;
             document.getElementById('stat-workouts').innerText = history.length;
-            document.getElementById('stat-level').innerText = profile.level;
+            
+            // Set form values
             document.getElementById('v-level').value = profile.level;
-            document.getElementById('v-alert').value = profile.alertTime;
-            document.getElementById('level-indicator').innerText = profile.level + ' Program';
+            document.getElementById('v-goal').value = profile.goal;
+            document.getElementById('v-weight').value = profile.weight;
+            document.getElementById('v-height').value = profile.height;
+            
+            document.getElementById('level-indicator').innerText = `${profile.level} • ${profile.goal}`;
             const progress = Math.min((history.length % 5) * 20, 100);
             document.getElementById('progress-fill').style.width = progress + '%';
             document.getElementById('progress-text').innerText = progress + '%';
@@ -264,7 +301,20 @@
             new Chart(ctx, { type: 'doughnut', data: { labels: ['Chest', 'Back', 'Legs', 'Abs'], datasets: [{ data: [25, 25, 25, 25], backgroundColor: ['#3B82F6', '#60A5FA', '#93C5FD', '#1E3A8A'], borderWidth: 0, cutout: '80%' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
         }
 
-        function logSession() { history.push({ date: new Date().toLocaleDateString() }); localStorage.setItem('strive_history_v7', JSON.stringify(history)); location.reload(); }
+        function logSession() { 
+            // Save weight data to Personal Records
+            document.querySelectorAll('.pr-tracker').forEach(input => {
+                const weight = parseFloat(input.value);
+                if (weight > 0) {
+                    personalRecords[input.dataset.name] = weight;
+                }
+            });
+            localStorage.setItem('strive_prs_v8', JSON.stringify(personalRecords));
+
+            history.push({ date: new Date().toLocaleDateString() }); 
+            localStorage.setItem('strive_history_v8', JSON.stringify(history)); 
+            location.reload(); 
+        }
     </script>
 </body>
 </html>
