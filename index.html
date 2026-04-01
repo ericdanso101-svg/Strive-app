@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Strive V9 | Analytics Engine</title>
+    <title>Strive V11 | Automated Coach</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -28,7 +28,8 @@
         .day-active { border-color: #3B82F6; background-color: rgba(59, 130, 246, 0.1); color: #3B82F6; }
         .badge-box { background-color: var(--element-bg); border: 1px solid var(--border-color); border-radius: 1.5rem; padding: 1rem; text-align: center; opacity: 0.4; filter: grayscale(1); }
         .badge-unlocked { opacity: 1; filter: grayscale(0); border-color: #3B82F6; background-color: rgba(59, 130, 246, 0.05); }
-        .weight-input { width: 60px; text-align: center; font-weight: 900; color: #3B82F6; background-color: var(--input-bg); border: 1px solid var(--border-color); border-radius: 0.75rem; padding: 0.5rem; outline: none; }
+        .weight-input { width: 60px; text-align: center; font-weight: 900; color: #3B82F6; background-color: var(--input-bg); border: 1px solid var(--border-color); border-radius: 0.75rem; padding: 0.5rem; outline: none; transition: all 0.2s; }
+        .weight-input:focus { border-color: #3B82F6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
     </style>
 </head>
 <body class="pb-20">
@@ -38,7 +39,7 @@
             <i class="fas fa-moon text-xl opacity-80 cursor-pointer" onclick="toggleDarkMode()"></i>
             <i class="fas fa-cog text-xl opacity-80 cursor-pointer" onclick="toggleSettings()"></i>
         </div>
-        <h1 class="text-2xl font-black tracking-tight mt-4 mb-2 text-center">Strive V9</h1>
+        <h1 class="text-2xl font-black tracking-tight mt-4 mb-2 text-center">Strive V11</h1>
         <div class="max-w-[240px] mx-auto bg-white/20 p-4 rounded-2xl backdrop-blur-sm border border-white/20 mt-6">
             <div class="flex justify-between text-[10px] font-bold uppercase mb-2 tracking-widest">
                 <span>Power Goal</span><span id="progress-text">0%</span>
@@ -75,8 +76,11 @@
                     <div class="p-4 bg-[var(--element-bg)] border border-[var(--border-color)] rounded-2xl">
                         <label class="text-[9px] font-bold uppercase text-[var(--text-muted)] block mb-2">Primary Goal</label>
                         <select id="v-goal" class="w-full bg-transparent font-black text-blue-500 outline-none" onchange="updateProfile()">
-                            <option value="Build Muscle">Build Muscle (Progressive Overload)</option>
-                            <option value="Fat Loss">Fat Loss (Volume Tracking)</option>
+                            <option value="Build Muscle">Build Muscle (Hypertrophy)</option>
+                            <option value="Strength">Max Strength (Heavy, Low Rep)</option>
+                            <option value="Fat Loss">Fat Loss (High Volume)</option>
+                            <option value="Endurance">Endurance (Stamina)</option>
+                            <option value="Maintenance">Maintenance</option>
                         </select>
                     </div>
                     <div class="p-4 bg-[var(--element-bg)] border border-[var(--border-color)] rounded-2xl">
@@ -93,20 +97,25 @@
         </div>
 
         <div id="view-goals" class="space-y-6 block">
-            <section class="card p-7">
-                <h2 class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest text-center mb-4">Strength Progression (LBS)</h2>
-                <div class="h-40 mb-2"><canvas id="strengthChart"></canvas></div>
-                <p class="text-[8px] font-bold text-center text-blue-500 uppercase tracking-widest">Tracking Top Lifts</p>
-            </section>
-
-            <section class="card p-7 text-center">
+            
+            <section class="card p-6 text-center">
                 <div class="grid grid-cols-2 gap-4">
                     <div><div class="text-3xl font-black" id="stat-workouts">0</div><div class="text-[9px] font-bold text-[var(--text-muted)] uppercase mt-1">Total Sessions</div></div>
                     <div class="border-l border-[var(--border-color)]"><div class="text-3xl font-black text-blue-500" id="stat-bmi">--</div><div class="text-[9px] font-bold text-[var(--text-muted)] uppercase mt-1">Current BMI</div></div>
                 </div>
             </section>
 
-            <section class="card p-7">
+            <section class="card p-6">
+                <h2 class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest text-center mb-4">Muscle Distribution</h2>
+                <div class="h-48 mb-2"><canvas id="musclePieChart"></canvas></div>
+            </section>
+
+            <section class="card p-6">
+                <h2 class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest text-center mb-4">Strength Progression (LBS)</h2>
+                <div class="h-40 mb-2"><canvas id="strengthChart"></canvas></div>
+            </section>
+
+            <section class="card p-6">
                 <h2 class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest text-center mb-6">Milestones</h2>
                 <div class="grid grid-cols-2 gap-4" id="badge-grid"></div>
             </section>
@@ -125,8 +134,8 @@
                 <div id="workout-menu"><button onclick="startWorkout()" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl uppercase text-xs shadow-lg">Start Session</button></div>
                 
                 <div id="active-workout" class="hidden space-y-4">
-                    <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl text-center">
-                        <p class="text-[9px] font-black text-blue-600 uppercase tracking-widest">Log weight to update your 1RM</p>
+                    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-3 rounded-xl text-center">
+                        <p class="text-[9px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest">Weights Auto-Filled from Last Session</p>
                     </div>
                     <div id="exercise-list" class="space-y-4"></div>
                     <button onclick="logSession()" class="w-full bg-blue-600 text-white font-black py-5 rounded-2xl uppercase text-xs mt-4 shadow-lg">Finish & Log Data</button>
@@ -147,14 +156,12 @@
         const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         const types = ['REST', 'UPPER BODY', 'LOWER BODY', 'FULL BODY', 'CORE'];
         
-        let history = JSON.parse(localStorage.getItem('strive_history_v9')) || [];
-        let profile = JSON.parse(localStorage.getItem('strive_profile_v9')) || { weight: 170, height: 70, level: 'Pro', goal: 'Build Muscle', darkMode: false };
-        let schedule = JSON.parse(localStorage.getItem('strive_schedule_v9')) || { 'Monday': 'CORE', 'Tuesday': 'LOWER BODY', 'Wednesday': 'UPPER BODY', 'Thursday': 'REST', 'Friday': 'FULL BODY', 'Saturday': 'CORE', 'Sunday': 'REST' };
+        let history = JSON.parse(localStorage.getItem('strive_history_v11')) || [];
+        let profile = JSON.parse(localStorage.getItem('strive_profile_v11')) || { weight: 170, height: 70, level: 'Pro', goal: 'Build Muscle', darkMode: false };
+        let schedule = JSON.parse(localStorage.getItem('strive_schedule_v11')) || { 'Monday': 'CORE', 'Tuesday': 'LOWER BODY', 'Wednesday': 'UPPER BODY', 'Thursday': 'REST', 'Friday': 'FULL BODY', 'Saturday': 'CORE', 'Sunday': 'REST' };
         
-        // V9: Advanced Tracking Array
-        let strengthData = JSON.parse(localStorage.getItem('strive_strength_v9')) || {
-            'Bench Press': [135, 145, 155], 'Squats': [185, 195, 205] // Dummy data to show the chart immediately
-        };
+        let strengthData = JSON.parse(localStorage.getItem('strive_strength_v11')) || { 'Bench Press': [135], 'Squats': [185] };
+        let lastWeights = JSON.parse(localStorage.getItem('strive_last_weights_v11')) || { 'Bench Press': 135, 'Squats': 185 };
 
         const exercises = {
             Beginner: { 'UPPER BODY': ['Wall Pushups', 'Dumbbell Rows'], 'LOWER BODY': ['Chair Squats', 'Dumbbell RDLs'], 'FULL BODY': ['Dumbbell Thrusters'], 'CORE': ['Plank Holds'], 'REST': [] },
@@ -170,7 +177,7 @@
 
         window.onload = function() { 
             if(profile.darkMode) document.body.classList.add('dark');
-            updateUI(); renderWeeklyBoard(); initStrengthChart(); updateBadges();
+            updateUI(); renderWeeklyBoard(); initMusclePieChart(); initStrengthChart(); updateBadges();
         };
 
         function switchTab(tab) {
@@ -191,7 +198,10 @@
         function toggleDarkMode() {
             profile.darkMode = !profile.darkMode;
             document.body.classList.toggle('dark');
-            localStorage.setItem('strive_profile_v9', JSON.stringify(profile));
+            localStorage.setItem('strive_profile_v11', JSON.stringify(profile));
+            // Reload charts to update styling
+            initMusclePieChart();
+            initStrengthChart();
         }
 
         function renderWeeklyBoard() {
@@ -204,7 +214,7 @@
 
         function toggleDay(day) {
             schedule[day] = types[(types.indexOf(schedule[day]) + 1) % types.length];
-            localStorage.setItem('strive_schedule_v9', JSON.stringify(schedule));
+            localStorage.setItem('strive_schedule_v11', JSON.stringify(schedule));
             renderWeeklyBoard();
         }
 
@@ -226,12 +236,19 @@
             
             const list = exercises[profile.level][todayMode];
             let sets = profile.level === 'Advanced' ? 5 : (profile.level === 'Pro' ? 4 : 3);
-            let repsTarget = profile.goal === 'Fat Loss' ? 15 : 8; 
             
+            let repsTarget = 10;
+            if (profile.goal === 'Strength') repsTarget = 5;
+            else if (profile.goal === 'Fat Loss') repsTarget = 15;
+            else if (profile.goal === 'Endurance') repsTarget = 20;
+
             document.getElementById('exercise-list').innerHTML = list.map(ex => {
-                let historyArray = strengthData[ex] || [];
-                let lastWeight = historyArray.length > 0 ? historyArray[historyArray.length - 1] : 0;
-                let suggestedValue = lastWeight > 0 ? (profile.goal === 'Build Muscle' ? lastWeight + 5 : lastWeight) : "";
+                let pastWeight = lastWeights[ex] || "";
+                let suggestedValue = pastWeight;
+                
+                if (pastWeight !== "" && (profile.goal === 'Build Muscle' || profile.goal === 'Strength')) {
+                    suggestedValue = parseInt(pastWeight) + 5;
+                }
                 
                 return `
                 <div class="p-5 bg-[var(--element-bg)] border border-[var(--border-color)] rounded-2xl">
@@ -242,11 +259,11 @@
                     <div class="flex gap-2 justify-between">
                         <div class="flex flex-col flex-1">
                             <span class="text-[8px] font-bold text-[var(--text-muted)] uppercase mb-1">Weight (LBS)</span>
-                            <input type="number" class="weight-input w-full log-w" data-name="${ex}" placeholder="LBS" value="${suggestedValue}">
+                            <input type="number" class="weight-input w-full log-w" data-name="${ex}" value="${suggestedValue}" placeholder="LBS">
                         </div>
                         <div class="flex flex-col flex-1">
                             <span class="text-[8px] font-bold text-[var(--text-muted)] uppercase mb-1">Reps Per Set</span>
-                            <input type="number" class="weight-input w-full log-r" placeholder="Reps" value="${repsTarget}">
+                            <input type="number" class="weight-input w-full log-r" value="${repsTarget}" placeholder="Reps">
                         </div>
                     </div>
                 </div>`;
@@ -258,7 +275,7 @@
             profile.goal = document.getElementById('v-goal').value;
             profile.weight = parseFloat(document.getElementById('v-weight').value) || profile.weight;
             profile.height = parseFloat(document.getElementById('v-height').value) || profile.height;
-            localStorage.setItem('strive_profile_v9', JSON.stringify(profile));
+            localStorage.setItem('strive_profile_v11', JSON.stringify(profile));
             updateUI(); updateBadges();
         }
 
@@ -276,25 +293,67 @@
             document.getElementById('progress-text').innerText = progress + '%';
         }
 
+        // RESTORED PIE CHART
+        function initMusclePieChart() {
+            const ctx = document.getElementById('musclePieChart').getContext('2d');
+            const textColor = profile.darkMode ? '#94A3B8' : '#64748B';
+            
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Chest', 'Biceps', 'Back', 'Legs', 'Triceps', 'Shoulders', 'Calves', 'Abs'],
+                    datasets: [{
+                        data: [18, 12, 20, 15, 8, 12, 5, 10],
+                        backgroundColor: [
+                            '#EA4335', // Red (Chest)
+                            '#4285F4', // Blue (Biceps)
+                            '#1967D2', // Dark Blue (Back)
+                            '#8A2BE2', // Purple (Legs)
+                            '#009688', // Teal (Triceps)
+                            '#F09300', // Orange (Shoulders)
+                            '#D81B60', // Pink (Calves)
+                            '#34A853'  // Green (Abs)
+                        ],
+                        borderWidth: 2,
+                        borderColor: profile.darkMode ? '#1E293B' : '#FFFFFF'
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { 
+                            position: 'right', 
+                            labels: { boxWidth: 10, font: { size: 9, family: 'Quicksand', weight: 'bold' }, color: textColor } 
+                        } 
+                    }
+                }
+            });
+        }
+
         function initStrengthChart() {
             const ctx = document.getElementById('strengthChart').getContext('2d');
             const benchData = strengthData['Bench Press'] || [0];
             const squatData = strengthData['Squats'] || [0];
-            const labels = benchData.map((_, i) => `Wk ${i+1}`);
+            const labels = benchData.map((_, i) => `S${i+1}`);
+            const gridColor = profile.darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+            const textColor = profile.darkMode ? '#94A3B8' : '#64748B';
 
             new Chart(ctx, { 
                 type: 'line', 
                 data: { 
                     labels: labels, 
                     datasets: [
-                        { label: 'Bench Press', data: benchData, borderColor: '#3B82F6', tension: 0.4, borderWidth: 3 },
-                        { label: 'Squats', data: squatData, borderColor: '#93C5FD', tension: 0.4, borderWidth: 3, borderDash: [5, 5] }
+                        { label: 'Bench 1RM', data: benchData, borderColor: '#3B82F6', tension: 0.4, borderWidth: 3 },
+                        { label: 'Squat 1RM', data: squatData, borderColor: '#93C5FD', tension: 0.4, borderWidth: 3, borderDash: [5, 5] }
                     ] 
                 }, 
                 options: { 
                     responsive: true, maintainAspectRatio: false, 
                     plugins: { legend: { display: false } },
-                    scales: { x: { display: false }, y: { grid: { color: 'rgba(100, 116, 139, 0.1)' } } }
+                    scales: { 
+                        x: { display: false }, 
+                        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 9, family: 'Quicksand', weight: 'bold' } } } 
+                    }
                 } 
             });
         }
@@ -309,16 +368,17 @@
                 const name = input.dataset.name;
                 
                 if (weight > 0 && reps > 0) {
+                    lastWeights[name] = weight;
                     if (!strengthData[name]) strengthData[name] = [];
-                    // Calculate 1RM using Epley Formula
                     const oneRepMax = Math.round(weight * (1 + (reps / 30)));
                     strengthData[name].push(oneRepMax);
                 }
             });
 
-            localStorage.setItem('strive_strength_v9', JSON.stringify(strengthData));
+            localStorage.setItem('strive_last_weights_v11', JSON.stringify(lastWeights));
+            localStorage.setItem('strive_strength_v11', JSON.stringify(strengthData));
             history.push({ date: new Date().toLocaleDateString() }); 
-            localStorage.setItem('strive_history_v9', JSON.stringify(history)); 
+            localStorage.setItem('strive_history_v11', JSON.stringify(history)); 
             location.reload(); 
         }
     </script>
