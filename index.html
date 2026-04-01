@@ -3,99 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Strive | Dashboard</title>
+    <title>Strive | Smart Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #FFFFFF; color: #1E293B; font-family: 'Quicksand', sans-serif; }
+        body { background-color: #FFFFFF; color: #1E293B; font-family: 'Quicksand', sans-serif; -webkit-tap-highlight-color: transparent; }
         .dashboard-hero { background: linear-gradient(rgba(59, 130, 246, 0.8), rgba(30, 64, 175, 0.9)), url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80'); background-size: cover; background-position: center; }
         .card { background: #F8FAFC; border-radius: 32px; border: 1px solid #F1F5F9; }
-        .active-tab { background: #3B82F6; color: white !important; border-radius: 16px; }
-        .badge { background: #EFF6FF; border: 1px solid #DBEAFE; border-radius: 20px; padding: 10px; text-align: center; }
-        .progress-bar-fill { transition: width 1s ease-in-out; }
+        .active-tab { background: #3B82F6; color: white !important; border-radius: 16px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+        .badge-icon { background: #EFF6FF; border: 1px solid #DBEAFE; border-radius: 20px; padding: 15px; text-align: center; transition: all 0.3s; }
+        .progress-bar-fill { transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
     </style>
 </head>
 <body class="pb-24">
 
     <header class="dashboard-hero text-white p-10 text-center rounded-b-[4rem] shadow-2xl mb-4">
-        <div class="flex justify-between items-center mb-4">
-            <i class="fas fa-bell text-white/80" onclick="alert('Notifications Enabled: We\'ll give you a soft nudge at 8am!')"></i>
-            <h1 class="text-2xl font-bold italic tracking-tight">Strive Dashboard</h1>
-            <i class="fas fa-user-circle text-white/80"></i>
+        <div class="flex justify-between items-center mb-6">
+            <i class="fas fa-bell text-white/80 text-xl" onclick="alert('Notification System: Active. Soft nudge set for 8:00 AM.')"></i>
+            <h1 class="text-2xl font-bold italic tracking-tight">Strive Dash</h1>
+            <i class="fas fa-user-circle text-white/80 text-xl"></i>
         </div>
         
-        <div class="mt-4">
-            <div class="flex justify-between text-[10px] font-bold uppercase mb-1 tracking-widest">
-                <span>Weekly Goal Progress</span>
+        <div class="mt-4 bg-white/10 p-5 rounded-[2rem] backdrop-blur-sm border border-white/10">
+            <div class="flex justify-between text-[10px] font-bold uppercase mb-2 tracking-widest">
+                <span>Weekly Power Goal</span>
                 <span id="progress-text">0%</span>
             </div>
-            <div class="w-full bg-white/20 h-3 rounded-full overflow-hidden">
-                <div id="progress-fill" class="progress-bar-fill bg-white h-full" style="width: 0%"></div>
+            <div class="w-full bg-white/20 h-4 rounded-full overflow-hidden">
+                <div id="progress-fill" class="progress-bar-fill bg-white h-full shadow-[0_0_15px_rgba(255,255,255,0.5)]" style="width: 0%"></div>
             </div>
+            <p class="text-[9px] mt-3 opacity-80 font-bold uppercase tracking-tighter">Log 5 sessions to hit 100%!</p>
         </div>
     </header>
 
     <main class="container mx-auto px-6 max-w-md space-y-6">
 
-        <nav class="flex justify-around bg-slate-50 p-2 rounded-2xl border border-slate-100">
-            <button onclick="switchTab('goals')" id="tab-goals" class="flex-1 py-3 text-[11px] font-bold uppercase active-tab">Dash</button>
+        <nav class="flex justify-around bg-slate-50 p-2 rounded-2xl border border-slate-100 shadow-sm">
+            <button onclick="switchTab('goals')" id="tab-goals" class="flex-1 py-3 text-[11px] font-bold uppercase active-tab">Dashboard</button>
             <button onclick="switchTab('daily')" id="tab-daily" class="flex-1 py-3 text-[11px] font-bold uppercase text-slate-400">Coach</button>
             <button onclick="switchTab('plan')" id="tab-plan" class="flex-1 py-3 text-[11px] font-bold uppercase text-slate-400">Plan</button>
         </nav>
 
         <div id="view-goals" class="space-y-6">
-            <section class="card p-7 text-center">
-                <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Muscle Focus</h2>
-                <div class="h-48"><canvas id="goalPieChart"></canvas></div>
-                <div class="grid grid-cols-2 gap-4 mt-8 pt-6 border-t border-slate-50">
+            <section class="card p-8 text-center shadow-sm">
+                <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Body Focus Analysis</h2>
+                <div class="h-52 mb-4"><canvas id="goalPieChart"></canvas></div>
+                <div class="grid grid-cols-2 gap-4 mt-8 pt-6 border-t border-slate-100">
                     <div>
-                        <div class="text-xl font-bold" id="stat-workouts">0</div>
-                        <div class="text-[9px] font-bold text-slate-400 uppercase">Sessions</div>
+                        <div class="text-2xl font-bold text-slate-800" id="stat-workouts">0</div>
+                        <div class="text-[9px] font-bold text-slate-400 uppercase">Total Sessions</div>
                     </div>
-                    <div class="border-l border-slate-50">
-                        <div class="text-xl font-bold text-blue-500" id="stat-bmi">--</div>
-                        <div class="text-[9px] font-bold text-slate-400 uppercase">BMI</div>
+                    <div class="border-l border-slate-100">
+                        <div class="text-2xl font-bold text-blue-500" id="stat-bmi">--</div>
+                        <div class="text-[9px] font-bold text-slate-400 uppercase">Current BMI</div>
                     </div>
                 </div>
             </section>
 
-            <section class="card p-7">
-                <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-4">Your Achievements</h2>
-                <div class="grid grid-cols-3 gap-3">
-                    <div class="badge opacity-50" id="badge-1">
-                        <i class="fas fa-fire text-orange-500 text-xl"></i>
-                        <p class="text-[8px] font-bold mt-1">STREAK</p>
+            <section class="card p-8 shadow-sm">
+                <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-6">Unlocked Achievements</h2>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="badge-icon grayscale opacity-30" id="badge-1">
+                        <i class="fas fa-bolt text-blue-500 text-2xl"></i>
+                        <p class="text-[8px] font-bold mt-2">STARTER</p>
                     </div>
-                    <div class="badge opacity-50" id="badge-2">
-                        <i class="fas fa-trophy text-yellow-500 text-xl"></i>
-                        <p class="text-[8px] font-bold mt-1">ELITE</p>
+                    <div class="badge-icon grayscale opacity-30" id="badge-2">
+                        <i class="fas fa-crown text-yellow-500 text-2xl"></i>
+                        <p class="text-[8px] font-bold mt-2">ELITE</p>
                     </div>
-                    <div class="badge opacity-50" id="badge-3">
-                        <i class="fas fa-medal text-blue-500 text-xl"></i>
-                        <p class="text-[8px] font-bold mt-1">LOANER</p>
+                    <div class="badge-icon grayscale opacity-30" id="badge-3">
+                        <i class="fas fa-fire text-orange-500 text-2xl"></i>
+                        <p class="text-[8px] font-bold mt-2">STREAK</p>
                     </div>
                 </div>
             </section>
         </div>
 
         <div id="view-daily" class="hidden space-y-6">
-            <section class="card p-7 border-t-8 border-blue-400">
-                <h2 class="text-sm font-bold text-slate-800 mb-2">Trainer Recommendation</h2>
-                <p id="rec-text" class="text-[10px] text-slate-400 font-bold uppercase mb-4 italic">Loading...</p>
-                <div id="workout-menu" class="space-y-3">
-                    <button id="rec-btn" onclick="generatePersonalized()" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl uppercase text-xs">Start Today's Session</button>
+            <section class="card p-8 border-t-8 border-blue-500">
+                <h2 class="text-sm font-bold text-slate-800 mb-2 italic">Trainer Insights</h2>
+                <p id="rec-text" class="text-[10px] text-slate-400 font-bold uppercase mb-6">Generating daily plan...</p>
+                <div id="workout-menu" class="space-y-4">
+                    <button onclick="generatePersonalized()" class="w-full bg-blue-600 text-white font-bold py-5 rounded-[1.5rem] uppercase text-xs shadow-lg active:scale-95 transition">Start Today's Session</button>
                 </div>
                 <div id="active-workout" class="hidden space-y-4">
                     <div id="exercise-list" class="space-y-3"></div>
-                    <button onclick="logSession()" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl uppercase text-xs">Log Workout</button>
+                    <button onclick="logSession()" class="w-full bg-blue-600 text-white font-bold py-5 rounded-[1.5rem] uppercase text-xs">Finish Workout</button>
                 </div>
             </section>
         </div>
 
         <div id="view-plan" class="hidden space-y-4">
-            <section class="card p-7">
+            <section class="card p-8">
                 <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest text-center mb-6">Weekly Schedule</h2>
                 <div id="weekly-board" class="space-y-3"></div>
             </section>
@@ -123,11 +124,14 @@
         function updateGamification() {
             const count = history.length;
             const progress = Math.min((count % 5) * 20, 100);
-            document.getElementById('progress-fill').style.width = progress + '%';
-            document.getElementById('progress-text').innerText = progress + '%';
-            if (count > 0) document.getElementById('badge-1').classList.remove('opacity-50');
-            if (count > 4) document.getElementById('badge-2').classList.remove('opacity-50');
-            if (count > 9) document.getElementById('badge-3').classList.remove('opacity-50');
+            setTimeout(() => {
+                document.getElementById('progress-fill').style.width = (progress || 5) + '%';
+                document.getElementById('progress-text').innerText = progress + '%';
+            }, 500);
+
+            if (count > 0) document.getElementById('badge-1').classList.remove('grayscale', 'opacity-30');
+            if (count > 4) document.getElementById('badge-2').classList.remove('grayscale', 'opacity-30');
+            if (count > 9) document.getElementById('badge-3').classList.remove('grayscale', 'opacity-30');
         }
 
         function updateUI() {
@@ -142,20 +146,20 @@
             const mode = schedule[days[(new Date().getDay() + 6) % 7]].split(' ')[0].toLowerCase();
             const pool = { upper: ['Pushups', 'Rows'], lower: ['Squats', 'Lunges'], full: ['Burpees', 'Jacks'], core: ['Plank', 'Twists'] };
             document.getElementById('exercise-list').innerHTML = (pool[mode] || pool['full']).map(ex => `
-                <div class="p-5 bg-white border border-slate-50 rounded-3xl flex justify-between items-center">
+                <div class="p-5 bg-white border border-slate-50 rounded-[1.5rem] flex justify-between items-center shadow-sm">
                     <span class="font-bold uppercase text-[11px] text-slate-800">${ex}</span>
-                    <i class="fas fa-check text-slate-200"></i>
+                    <div class="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center"><i class="fas fa-check text-blue-300 text-[10px]"></i></div>
                 </div>`).join('');
         }
 
         function setDailyRecommendation() {
             const today = days[(new Date().getDay() + 6) % 7];
-            document.getElementById('rec-text').innerText = `Plan for Today: ${schedule[today]}`;
+            document.getElementById('rec-text').innerText = `Coach Schedule: ${schedule[today]}`;
         }
 
         function renderWeeklyBoard() {
             document.getElementById('weekly-board').innerHTML = days.map(day => `
-                <div class="flex justify-between p-5 bg-white border border-slate-100 rounded-3xl shadow-sm">
+                <div class="flex justify-between p-5 bg-white border border-slate-100 rounded-[1.5rem] shadow-sm">
                     <span class="text-[11px] font-bold uppercase text-slate-400">${day}</span>
                     <span class="text-[11px] font-bold uppercase text-slate-800 italic">${schedule[day]}</span>
                 </div>`).join('');
@@ -170,10 +174,10 @@
                     datasets: [{
                         data: [20, 20, 20, 20, 20],
                         backgroundColor: ['#60A5FA', '#3B82F6', '#2563EB', '#1D4ED8', '#DBEAFE'],
-                        borderWidth: 0, cutout: '75%'
+                        borderWidth: 0, cutout: '78%'
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 9, weight: 'bold' }, color: '#94A3B8', padding: 20 } } } }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Quicksand', size: 9, weight: 'bold' }, color: '#94A3B8', padding: 20 } } } }
             });
         }
 
