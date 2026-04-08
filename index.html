@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Strive V13 | Dynamic Coach</title>
+    <title>Strive V14 | Complete Coach</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -42,9 +42,25 @@
         .time-btn { transition: all 0.2s; color: var(--text-muted); background: var(--element-bg); border: 1px solid var(--border-color); }
         .time-active { background: #3B82F6; color: white; border-color: #3B82F6; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3); }
         .tutorial-box { background-color: rgba(59, 130, 246, 0.1); border-left: 4px solid #3B82F6; padding: 12px; margin-top: 10px; font-size: 11px; border-radius: 0 8px 8px 0; color: var(--text-main); }
+        
+        /* REST TIMER FLOATING PILL */
+        #rest-timer-container {
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(-150%);
+        }
+        #rest-timer-container.timer-visible {
+            transform: translateY(0);
+        }
     </style>
 </head>
-<body class="pb-20">
+<body class="pb-20 relative">
+
+    <div id="rest-timer-container" class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-slate-900/90 text-white px-6 py-3 rounded-full shadow-2xl z-50 flex items-center gap-4 border border-slate-700 w-max">
+        <i class="fas fa-stopwatch text-blue-400 text-xl animate-pulse"></i>
+        <span id="timer-text" class="font-bold font-mono text-xl tracking-wider">00:00</span>
+        <button onclick="stopTimer()" class="text-slate-400 hover:text-white ml-2"><i class="fas fa-times"></i></button>
+    </div>
 
     <header class="hero-bg text-white p-8 pb-12 rounded-b-[3rem] shadow-xl mb-6 relative">
         <div class="absolute top-6 right-6 flex gap-4">
@@ -56,7 +72,7 @@
             <i class="fas fa-user-ninja text-3xl text-white" id="avatar-icon"></i>
         </div>
         
-        <h1 class="text-xl font-black tracking-tight mb-2 text-center drop-shadow-md">Strive V13</h1>
+        <h1 class="text-xl font-black tracking-tight mb-2 text-center drop-shadow-md">Strive V14</h1>
         
         <div class="max-w-[240px] mx-auto bg-white/10 p-4 rounded-2xl backdrop-blur-md border border-white/20 mt-4 shadow-lg">
             <div class="flex justify-between text-[10px] font-bold uppercase mb-2 tracking-widest text-white">
@@ -172,9 +188,6 @@
                 </div>
                 
                 <div id="active-workout" class="hidden space-y-4">
-                    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-3 rounded-xl text-center">
-                        <p class="text-[9px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest">Scaled for <span id="display-time">30</span> Minutes</p>
-                    </div>
                     <div id="exercise-list" class="space-y-4"></div>
                     <button onclick="logSession()" class="w-full bg-blue-600 text-white font-black py-5 rounded-2xl uppercase text-xs mt-4 shadow-lg">Finish & Log Data</button>
                 </div>
@@ -194,22 +207,30 @@
         const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         const types = ['REST', 'UPPER BODY', 'LOWER BODY', 'FULL BODY', 'CORE'];
         
-        // V13 Keys
-        let history = JSON.parse(localStorage.getItem('strive_history_v13')) || [];
-        let profile = JSON.parse(localStorage.getItem('strive_profile_v13')) || { weight: 170, height: 70, level: 'Beginner', goal: 'Build Muscle', darkMode: false, avatarColor: '#3B82F6', avatarIcon: 'fa-user-ninja' };
-        let schedule = JSON.parse(localStorage.getItem('strive_schedule_v13')) || { 'Monday': 'CORE', 'Tuesday': 'LOWER BODY', 'Wednesday': 'UPPER BODY', 'Thursday': 'REST', 'Friday': 'FULL BODY', 'Saturday': 'CORE', 'Sunday': 'REST' };
-        let strengthData = JSON.parse(localStorage.getItem('strive_strength_v13')) || { 'Bench Press': [135], 'Squats': [185] };
-        let lastWeights = JSON.parse(localStorage.getItem('strive_last_weights_v13')) || { 'Bench Press': 135, 'Squats': 185 };
+        let history = JSON.parse(localStorage.getItem('strive_history_v14')) || [];
+        let profile = JSON.parse(localStorage.getItem('strive_profile_v14')) || { weight: 170, height: 70, level: 'Pro', goal: 'Build Muscle', darkMode: false, avatarColor: '#3B82F6', avatarIcon: 'fa-user-ninja' };
+        let schedule = JSON.parse(localStorage.getItem('strive_schedule_v14')) || { 'Monday': 'CORE', 'Tuesday': 'LOWER BODY', 'Wednesday': 'UPPER BODY', 'Thursday': 'REST', 'Friday': 'FULL BODY', 'Saturday': 'CORE', 'Sunday': 'REST' };
+        let strengthData = JSON.parse(localStorage.getItem('strive_strength_v14')) || { 'Bench Press': [135], 'Squats': [185] };
+        let lastWeights = JSON.parse(localStorage.getItem('strive_last_weights_v14')) || { 'Bench Press': 135, 'Squats': 185 };
         
-        let selectedDuration = 30; // Default 30 mins
+        let selectedDuration = 30;
+        let restInterval;
+        let audioCtx;
 
-        // Expanded Exercise Database (6 exercises per category to support 60min)
+        // Warmup Database (V14 Feature)
+        const warmups = {
+            'UPPER BODY': ['Arm Circles (60s)', 'Band Pull-Aparts (30s)', 'Push-up Plus (30s)'],
+            'LOWER BODY': ['Leg Swings (60s)', 'Bodyweight Squats (30s)', 'Hip Rotations (30s)'],
+            'FULL BODY': ['Jumping Jacks (60s)', 'Walkouts (30s)', 'High Knees (30s)'],
+            'CORE': ['Cat-Cow Stretches (60s)', 'Bird Dog (30s)', 'Light Plank (30s)']
+        };
+
         const exercises = {
             Beginner: { 
-                'UPPER BODY': [{n:'Wall Pushups', d:'Hands on wall, push back.'}, {n:'Dumbbell Rows', d:'Lean forward, pull to hip.'}, {n:'Light DB Press', d:'Push weights overhead.'}, {n:'Bicep Curls', d:'Curl weights to shoulders.'}, {n:'Tricep Extensions', d:'Lower weight behind head.'}, {n:'Lateral Raises', d:'Raise arms to sides.'}], 
-                'LOWER BODY': [{n:'Chair Squats', d:'Lower hips to chair, stand.'}, {n:'Dumbbell RDLs', d:'Hinge at hips, back straight.'}, {n:'Step-Ups', d:'Step onto box/stair.'}, {n:'Calf Raises', d:'Push up on toes.'}, {n:'Glute Bridges', d:'Lie on back, lift hips.'}, {n:'Assisted Lunges', d:'Hold wall, lunge forward.'}], 
-                'FULL BODY': [{n:'Dumbbell Thrusters', d:'Squat and press.'}, {n:'Step Jacks', d:'Low impact jumping jacks.'}, {n:'High Knees', d:'March in place high.'}, {n:'Wall Sit', d:'Hold squat on wall.'}, {n:'Shadow Boxing', d:'Punch air lightly.'}, {n:'Kettlebell Swings', d:'Hinge and swing bell.'}], 
-                'CORE': [{n:'Plank Holds', d:'Rest on forearms.'}, {n:'Crunches', d:'Small lift of shoulders.'}, {n:'Bird Dog', d:'Hands/knees, extend opposite arm/leg.'}, {n:'Seated Twists', d:'Twist torso sitting.'}, {n:'Leg Drops', d:'Lie down, lower legs.'}, {n:'Side Plank', d:'Hold plank on one arm.'}], 
+                'UPPER BODY': [{n:'Wall Pushups', d:'Hands on wall, push back.'}, {n:'Dumbbell Rows', d:'Lean forward, pull to hip.'}, {n:'Light DB Press', d:'Push weights overhead.'}], 
+                'LOWER BODY': [{n:'Chair Squats', d:'Lower hips to chair, stand.'}, {n:'Dumbbell RDLs', d:'Hinge at hips, back straight.'}, {n:'Step-Ups', d:'Step onto box/stair.'}], 
+                'FULL BODY': [{n:'Dumbbell Thrusters', d:'Squat and press.'}, {n:'Step Jacks', d:'Low impact jumping jacks.'}, {n:'High Knees', d:'March in place high.'}], 
+                'CORE': [{n:'Plank Holds', d:'Rest on forearms.'}, {n:'Crunches', d:'Small lift of shoulders.'}, {n:'Bird Dog', d:'Hands/knees, extend opposite arm/leg.'}], 
                 'REST': [] 
             },
             Pro: { 
@@ -239,6 +260,57 @@
             updateUI(); renderWeeklyBoard(); initMusclePieChart(); initStrengthChart(); updateBadges();
         };
 
+        // --- REST TIMER & AUDIO PING (V14) ---
+        function playPing() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(880, audioCtx.currentTime); // High pitch A5
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.4);
+        }
+
+        function startRest(seconds) {
+            clearInterval(restInterval);
+            const container = document.getElementById('rest-timer-container');
+            const timerText = document.getElementById('timer-text');
+            container.classList.add('timer-visible');
+            
+            let remaining = seconds;
+            updateTimerText(remaining);
+            
+            // Resume Audio Context on user interaction to bypass browser blocks
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            restInterval = setInterval(() => {
+                remaining--;
+                updateTimerText(remaining);
+                if (remaining <= 0) {
+                    clearInterval(restInterval);
+                    playPing();
+                    timerText.innerText = "LIFT!";
+                    setTimeout(() => container.classList.remove('timer-visible'), 4000);
+                }
+            }, 1000);
+        }
+
+        function updateTimerText(sec) {
+            let m = Math.floor(sec / 60);
+            let s = sec % 60;
+            document.getElementById('timer-text').innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+        }
+
+        function stopTimer() {
+            clearInterval(restInterval);
+            document.getElementById('rest-timer-container').classList.remove('timer-visible');
+        }
+
+        // --- CORE FUNCTIONS ---
         function switchTab(tab) {
             ['daily', 'plan', 'goals'].forEach(t => document.getElementById('view-' + t).classList.add('hidden'));
             document.getElementById('view-' + tab).classList.remove('hidden');
@@ -257,7 +329,7 @@
         function toggleDarkMode() {
             profile.darkMode = !profile.darkMode;
             document.body.classList.toggle('dark');
-            localStorage.setItem('strive_profile_v13', JSON.stringify(profile));
+            localStorage.setItem('strive_profile_v14', JSON.stringify(profile));
             initMusclePieChart(); initStrengthChart();
         }
 
@@ -265,7 +337,7 @@
             profile.avatarColor = color; profile.avatarIcon = icon;
             document.getElementById('main-avatar').style.backgroundColor = color;
             document.getElementById('avatar-icon').className = `fas ${icon} text-3xl text-white`;
-            localStorage.setItem('strive_profile_v13', JSON.stringify(profile));
+            localStorage.setItem('strive_profile_v14', JSON.stringify(profile));
         }
 
         function setDuration(mins) {
@@ -284,7 +356,7 @@
 
         function toggleDay(day) {
             schedule[day] = types[(types.indexOf(schedule[day]) + 1) % types.length];
-            localStorage.setItem('strive_schedule_v13', JSON.stringify(schedule));
+            localStorage.setItem('strive_schedule_v14', JSON.stringify(schedule));
             renderWeeklyBoard();
         }
 
@@ -301,29 +373,41 @@
         function startWorkout() {
             document.getElementById('workout-menu').classList.add('hidden');
             document.getElementById('active-workout').classList.remove('hidden');
-            document.getElementById('display-time').innerText = selectedDuration;
             
             const todayMode = schedule[days[(new Date().getDay() + 6) % 7]];
             if(todayMode === 'REST') { document.getElementById('exercise-list').innerHTML = '<p class="text-center text-xs font-bold text-[var(--text-muted)] py-8">Recovery Day. Rest up!</p>'; return; }
             
-            // DYNAMIC SCALING ALGORITHM
+            // DYNAMIC SCALING
             const fullList = exercises[profile.level][todayMode];
-            let numExercises = 4; // Default 30m
+            let numExercises = 4; // 30m
             if (selectedDuration === 15) numExercises = 2;
             else if (selectedDuration === 45) numExercises = 5;
             else if (selectedDuration === 60) numExercises = 6;
             
             const list = fullList.slice(0, numExercises);
-            
             let sets = profile.level === 'Advanced' ? 5 : (profile.level === 'Pro' ? 4 : 3);
-            if (selectedDuration === 15) sets = Math.max(2, sets - 1); // Less sets for quick workout
+            if (selectedDuration === 15) sets = Math.max(2, sets - 1);
             
             let repsTarget = 10;
             if (profile.goal === 'Strength') repsTarget = 5;
             else if (profile.goal === 'Fat Loss') repsTarget = 15;
             else if (profile.goal === 'Endurance') repsTarget = 20;
 
-            document.getElementById('exercise-list').innerHTML = list.map(exObj => {
+            let htmlString = "";
+
+            // V14: DYNAMIC WARM-UP GENERATOR
+            if (warmups[todayMode]) {
+                const wList = warmups[todayMode];
+                htmlString += `
+                <div class="mb-6 p-5 border border-teal-500/50 bg-teal-50 dark:bg-teal-900/20 rounded-2xl">
+                    <h3 class="text-[10px] font-black uppercase text-teal-600 dark:text-teal-400 mb-3 tracking-widest"><i class="fas fa-fire-alt mr-1"></i> Coach's Warm-Up</h3>
+                    <ul class="text-xs font-bold text-[var(--text-muted)] space-y-2 ml-1">
+                        ${wList.map(w => `<li><i class="fas fa-check-circle text-teal-500/50 mr-2"></i> ${w}</li>`).join('')}
+                    </ul>
+                </div>`;
+            }
+
+            htmlString += list.map(exObj => {
                 const exName = profile.level === 'Beginner' ? exObj.n : exObj.n;
                 const exDesc = profile.level === 'Beginner' ? exObj.d : '';
                 
@@ -337,7 +421,7 @@
                         <span class="font-black uppercase text-xs">${exName}</span>
                         <span class="text-[9px] font-bold text-white bg-blue-500 px-3 py-1 rounded-full">${sets} Sets</span>
                     </div>
-                    <div class="flex gap-2 justify-between">
+                    <div class="flex gap-2 justify-between mb-4">
                         <div class="flex flex-col flex-1">
                             <span class="text-[8px] font-bold text-[var(--text-muted)] uppercase mb-1">Weight (LBS)</span>
                             <input type="number" class="weight-input w-full log-w" data-name="${exName}" value="${suggestedValue}" placeholder="LBS">
@@ -347,9 +431,17 @@
                             <input type="number" class="weight-input w-full log-r" value="${repsTarget}" placeholder="Reps">
                         </div>
                     </div>
+                    
+                    <div class="flex gap-2 pt-4 border-t border-[var(--border-color)]">
+                        <button onclick="startRest(60)" class="flex-1 py-2 bg-[var(--bg-main)] text-[var(--text-muted)] rounded-lg text-[9px] font-bold uppercase hover:bg-blue-500 hover:text-white transition-colors"><i class="fas fa-stopwatch mr-1"></i> 60s Rest</button>
+                        <button onclick="startRest(90)" class="flex-1 py-2 bg-[var(--bg-main)] text-[var(--text-muted)] rounded-lg text-[9px] font-bold uppercase hover:bg-blue-500 hover:text-white transition-colors"><i class="fas fa-stopwatch mr-1"></i> 90s Rest</button>
+                    </div>
+
                     ${profile.level === 'Beginner' ? `<div class="tutorial-box"><i class="fas fa-video mr-1"></i> <strong>How to:</strong> ${exDesc}</div>` : ''}
                 </div>`;
             }).join('');
+
+            document.getElementById('exercise-list').innerHTML = htmlString;
         }
 
         function updateProfile() {
@@ -357,7 +449,7 @@
             profile.goal = document.getElementById('v-goal').value;
             profile.weight = parseFloat(document.getElementById('v-weight').value) || profile.weight;
             profile.height = parseFloat(document.getElementById('v-height').value) || profile.height;
-            localStorage.setItem('strive_profile_v13', JSON.stringify(profile));
+            localStorage.setItem('strive_profile_v14', JSON.stringify(profile));
             updateUI(); updateBadges();
         }
 
@@ -424,10 +516,10 @@
                     strengthData[name].push(oneRepMax);
                 }
             });
-            localStorage.setItem('strive_last_weights_v13', JSON.stringify(lastWeights));
-            localStorage.setItem('strive_strength_v13', JSON.stringify(strengthData));
+            localStorage.setItem('strive_last_weights_v14', JSON.stringify(lastWeights));
+            localStorage.setItem('strive_strength_v14', JSON.stringify(strengthData));
             history.push({ date: new Date().toLocaleDateString() }); 
-            localStorage.setItem('strive_history_v13', JSON.stringify(history)); 
+            localStorage.setItem('strive_history_v14', JSON.stringify(history)); 
             location.reload(); 
         }
     </script>
